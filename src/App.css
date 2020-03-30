@@ -1,38 +1,203 @@
-.App {
-  text-align: center;
+.top-level-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgb(43, 43, 43);
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.left-container {
+  width: 70%;
+  height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  justify-content: space-evenly;
+  padding: 25px;
+  box-sizing: border-box;
 }
 
-.App-link {
-  color: #61dafb;
+.champion-list {
+  height: 100vh;
+  width: 30%;
+  overflow-y: scroll;
+  -ms-overflow-style: none;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.champion-list::-webkit-scrollbar {
+  display: none;
+}
+
+.hex-grid {
+  height: 50%;
+  margin: 0 0 50px 0;
+}
+
+.hex-grid-row {
+  display: grid;
+  grid-template-columns: repeat(7, 75px);
+  grid-gap: 5px;
+  margin-bottom: -17px;
+}
+
+.hex-grid-row.even {
+  margin-left: 40px;
+}
+
+.hexagon:hover {
+  background-color: deepskyblue;
+}
+
+.hexagon {
+  position: relative;
+  width: 75px; 
+  height: 43.30px;
+  margin: 21.65px 0;
+  background-color: lightblue;
+  background-size: auto 86.6025px;
+  background-position: center;
+}
+
+.hexTop,
+.hexBottom {
+  position: absolute;
+  z-index: 1;
+  width: 53.03px;
+  height: 53.03px;
+  overflow: hidden;
+  -webkit-transform: scaleY(0.5774) rotate(-45deg);
+  -ms-transform: scaleY(0.5774) rotate(-45deg);
+  transform: scaleY(0.5774) rotate(-45deg);
+  background: inherit;
+  left: 10.98px;
+}
+
+.hexTop:after,
+.hexBottom:after {
+  content: "";
+  position: absolute;
+  width: 75.0000px;
+  height: 43.30127018922194px;
+  -webkit-transform:  rotate(45deg) scaleY(1.7321) translateY(-21.6506px);
+  -ms-transform:      rotate(45deg) scaleY(1.7321) translateY(-21.6506px);
+  transform:          rotate(45deg) scaleY(1.7321) translateY(-21.6506px);
+  -webkit-transform-origin: 0 0;
+  -ms-transform-origin: 0 0;
+  transform-origin: 0 0;
+  background: inherit;
+}
+
+.hexTop {
+  top: -26.5165px;
+}
+
+.hexTop:after {
+  background-position: center top;
+}
+
+.hexBottom {
+  bottom: -26.5165px;
+}
+
+.hexBottom:after {
+  background-position: center bottom;
+}
+
+.hexagon:after {
+  content: "";
+  position: absolute;
+  top: 0.0000px;
+  left: 0;
+  width: 75.0000px;
+  height: 43.3013px;
+  z-index: 2;
+  background: inherit;
+}
+
+.champion-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.champion-list-box {
+  width: 95%;
+  height: auto;
+}
+
+.champion-list-box-image {
+  width: 100%;
+  height: auto;
+  box-sizing: border-box;
+}
+
+.champion-list-box-image.one {
+  border: 2.5px solid lightgrey;
+}
+
+.champion-list-box-image.two {
+  border: 2.5px solid lightgreen;
+}
+
+.champion-list-box-image.three {
+  border: 2.5px solid deepskyblue;
+}
+
+.champion-list-box-image.four {
+  border: 2.5px solid violet;
+}
+
+.champion-list-box-image.five {
+  border: 2.5px solid yellow;
+}
+
+.champion-list-box-image.opaque {
+  opacity: 0.5;
+}
+
+.champion-list-box-tag {
+  width: 100%;
+  margin: 0;
+  text-align: center;
+  color: lightgrey;
+}
+
+.team-info-container {
+  height: 50%;
+}
+
+.team-info-header {
+  color: lightgrey;
+  font-size: 20px;
+  margin: 0 0 10px 0;
+}
+
+.team-info-member-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.team-info-synergy-name {
+  color: lightgrey;
+  border-radius: 5px;
+  padding: 5px;
+  margin: 0 10px 10px 0;
+  width: 160px;
+}
+
+.team-info-synergy-name.bronze {
+  border: 1px solid #965418
+}
+
+.team-info-synergy-name.silver {
+  border: 1px solid silver
+}
+
+.team-info-synergy-name.gold {
+  border: 1px solid gold
+}
+
+.team-info-synergy-icon {
+  width: 15px;
+  height: auto;
 }

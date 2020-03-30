@@ -1,5 +1,3 @@
-//LOTS OF REPEATED CODE, MAKE SURE TO MODULURIZE IT INTO FUNCTIONS LATER.
-
 import React from 'react';
 import './App.css';
 //champion portrait imports
@@ -338,7 +336,7 @@ class App extends React.Component {
         {
           name: 'Mordekaiser',
           cost: 'two',
-          traits: ['Darkstar', 'Vanguard'],
+          traits: ['Dark Star', 'Vanguard'],
           originIcon: darkStar,
           classIcon: vanguard,
           imgSrc: mordekaiser,
@@ -496,6 +494,9 @@ class App extends React.Component {
           imgSrc: zoe,
         },
       ],
+      costFilter: '',
+      classFilter: '',
+      originFilter: '',
       synergyList: [],
       synergyCount: {},
       hexList: [
@@ -731,8 +732,40 @@ class App extends React.Component {
     this.setState({indexOfHexWithMovingChampion: null})
   }
 
+  setCostFilter = (e) => {
+    this.setState({costFilter: e.target.value}, () => {console.log(this.state.costFilter)})
+  }
+
+  setOriginFilter = (e) => {
+    this.setState({originFilter: e.target.value}, () => {console.log(this.state.originFilter)})
+  }
+
+  setClassFilter = (e) => {
+    this.setState({classFilter: e.target.value}, () => {console.log(this.state.classFilter)})
+  }
+
   render() {
     const hexGridLoopArray = [0, 1, 2, 3, 4, 5, 6]
+    let filteredChampionArray = this.state.championArray
+    filteredChampionArray = filteredChampionArray.filter((champion) => {
+      if (this.state.costFilter === '' && this.state.originFilter === '' && this.state.classFilter === '') {
+        return this.state.championArray
+      } else if (this.state.costFilter !== '' && this.state.originFilter === '' && this.state.classFilter === '') {
+        return champion.cost === this.state.costFilter
+      } else if (this.state.costFilter === '' && this.state.originFilter !== '' && this.state.classFilter === '') {
+        return champion.traits[0] === this.state.originFilter
+      } else if (this.state.costFilter === '' && this.state.originFilter === '' && this.state.classFilter !== '') {
+        return champion.traits[1] === this.state.classFilter || champion.traits[2] === this.state.classFilter
+      } else if (this.state.costFilter !== '' && this.state.originFilter !== '' && this.state.classFilter === '') {
+        return champion.cost === this.state.costFilter && champion.traits[0] === this.state.originFilter 
+      } else if (this.state.costFilter !== '' && this.state.originFilter === '' && this.state.classFilter !== '') {
+        return champion.cost === this.state.costFilter && (this.state.classFilter === champion.traits[1] || this.state.classFilter === champion.traits[2])
+      } else if (this.state.costFilter === '' && this.state.originFilter !== '' && this.state.classFilter !== '') {
+        return champion.traits[0] === this.state.originFilter && (this.state.classFilter === champion.traits[1] || this.state.classFilter === champion.traits[2])
+      } else {
+        return champion.cost === this.state.costFilter && champion.traits[0] === this.state.originFilter && (this.state.classFilter === champion.traits[1] || this.state.classFilter === champion.traits[2])
+      }
+    })
     return (
       <div className='top-level-container'>
         <div className='left-container'>
@@ -973,31 +1006,71 @@ class App extends React.Component {
             </div>
           </div>
         </div>
-        <div 
-        className='champion-list' 
-        onDrop={this.handleDropOnChampionList} 
-        onDragOver={this.handleDragOver}
-        >
-          {this.state.championArray.map(champion => {
-            return (
-              <div className='champion-list-box' key={champion.name}>
-                <img 
-                className={`champion-list-box-image ${champion.cost} ${champion.draggable === 'no' ? 'opaque' : ''}`} src={champion.imgSrc}
-                alt=''
-                draggable={champion.draggable === 'no' ? false : true}
-                onDragStart={(e) => this.handleDragStart(e, champion.name)}
-                />
-                <div className='champion-list-box-tag'>
-                  <div>{champion.name}</div>
-                  <div>
-                    <img draggable={false} className='origin-icon' src={champion.originIcon} alt=''/>
-                    <img draggable={false} className='origin-icon' src={champion.classIcon} alt=''/>
-                    <img draggable={false} className='origin-icon' src={champion.class2Icon} alt=''/>
+        <div className='right-container'>
+          
+          <select className='champion-list-filter' value={this.state.costFilter} onChange={this.setCostFilter}>
+            <option value=''></option>
+            <option value="one">1-Cost</option>
+            <option value="two">2-Cost</option>
+            <option value="three">3-Cost</option>
+            <option value="four">4-Cost</option>
+            <option value="five">5-Cost</option>
+          </select>
+          <select className='champion-list-filter' value={this.state.originFilter} onChange={this.setOriginFilter}>
+            <option value=''></option>
+            <option value="Celestial">Celestial (2/4/6)</option>
+            <option value="Chrono">Chrono (2/4/6)</option>
+            <option value="Cybernetic">Cybernetic (3/6)</option>
+            <option value="Dark Star">Dark Star (3/6)</option>
+            <option value="Mech Pilot">Mech-Pilot (3)</option>
+            <option value="Rebel">Rebel (3/6)</option>
+            <option value="Space Pirate">Space Pirate (2/4</option>
+            <option value="Star Guardian">Star Guardian (3/6)</option>
+            <option value="Valkyrie">Valkyrie (2)</option>
+            <option value="Void">Void (3)</option>
+          </select>
+          <select className='champion-list-filter' value={this.state.classFilter} onChange={this.setClassFilter}>
+            <option value=''></option>
+            <option value="Blademaster">Blademaster (3/6)</option>
+            <option value="Blaster">Blaster (2/4)</option>
+            <option value="Brawler">Brawler (2/4)</option>
+            <option value="Demolitionist">Demolitionist (2)</option>
+            <option value="Infiltrator">Infiltrator (2/4)</option>
+            <option value="Mana Reaver">Mana-Reaver (2/4)</option>
+            <option value="Mercenary">Mercenary (1)</option>
+            <option value="Mystic">Mystic (2/4)</option>
+            <option value="Protector">Protector (2/4)</option>
+            <option value="Sniper">Sniper (2/4)</option>
+            <option value="Sorcerer">Sorcerer (2/4/6)</option>
+            <option value="Starship">Starship (1)</option>
+            <option value="Vanguard">Vanguard (2/4)</option>
+          </select>
+          <div 
+          className='champion-list' 
+          onDrop={this.handleDropOnChampionList} 
+          onDragOver={this.handleDragOver}
+          >
+            {filteredChampionArray.map(champion => {
+              return (
+                <div className='champion-list-box' key={champion.name}>
+                  <img 
+                  className={`champion-list-box-image ${champion.cost} ${champion.draggable === 'no' ? 'opaque' : ''}`} src={champion.imgSrc}
+                  alt=''
+                  draggable={champion.draggable === 'no' ? false : true}
+                  onDragStart={(e) => this.handleDragStart(e, champion.name)}
+                  />
+                  <div className='champion-list-box-tag'>
+                    <div>{champion.name}</div>
+                    <div>
+                      <img draggable={false} className='origin-icon' src={champion.originIcon} alt=''/>
+                      <img draggable={false} className='origin-icon' src={champion.classIcon} alt=''/>
+                      <img draggable={false} className='origin-icon' src={champion.class2Icon} alt=''/>
+                    </div>
                   </div>
                 </div>
-              </div>
-            )
-          })}
+              )
+            })}
+          </div>
         </div>
       </div>
     )

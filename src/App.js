@@ -76,6 +76,52 @@ import starShip from './assets/classes/starship.png'
 import valkyrie from './assets/classes/valkyrie.png'
 import vanguard from './assets/classes/vanguard.png'
 import void1 from './assets/classes/void.png'
+//item icon imports 
+import blademasterSpat from './assets/items/blademaster.png' 
+import bloodthirster from './assets/items/bloodthirster.png'
+import brambleVest from './assets/items/brambleVest.png'
+import celestialOrb from './assets/items/celestialOrb.png'
+import chaliceOfFavor from './assets/items/chaliceOfFavor.png'
+import darkStarsHeart from './assets/items/darkStarsHeart.png'
+import deathblade from './assets/items/deathblade.png'
+import demolitionistsCharge from './assets/items/demolitionistsCharge.png'
+import dragonsClaw from './assets/items/dragonsClaw.png'
+import forceOfNature from './assets/items/forceOfNature.png'
+import frozenHeart from './assets/items/frozenHeart.png'
+import giantSlayer from './assets/items/giantSlayer.png'
+import guardianAngel from './assets/items/guardianAngel.png'
+import guinsoosRageblade from './assets/items/guinsoosRageblade.png'
+import handOfJustice from './assets/items/handOfJustice.png'
+import hextechGunblade from './assets/items/hextechGunblade.png'
+import infiltratorsTalons from './assets/items/infiltratorsTalons.png'
+import infinityEdge from './assets/items/infinityEdge.png'
+import ionicSpark from './assets/items/ionicSpark.png'
+import jeweledGauntlet from './assets/items/jeweledGauntlet.png'
+import lastWhisper from './assets/items/lastWhisper.png'
+import locketOfTheIronSolari from './assets/items/locketOfTheIronSolari.png'
+import ludensEcho from './assets/items/ludensEcho.png'
+import morellonomicon from './assets/items/morellonomicon.png'
+import protectorsChestguard from './assets/items/protectorsChestguard.png'
+import quicksilver from './assets/items/quicksilver.png'
+import rabadonsDeathcap from './assets/items/rabadonsDeathcap.png'
+import rapidfireCannon from './assets/items/rapidfireCannon.png'
+import rebelMedal from './assets/items/rebelMedal.png'
+import redBuff from './assets/items/redBuff.png'
+import redemption from './assets/items/redemption.png'
+import runaansHurricane from './assets/items/runaansHurricane.png'
+import seraphsEmbrace from './assets/items/seraphsEmbrace.png'
+import shroudOfStillness from './assets/items/shroudOfStillness.png'
+import spearOfShojin from './assets/items/spearOfShojin.png'
+import starGuardiansCharm from './assets/items/starGuardiansCharm.png'
+import statikkShiv from './assets/items/statikkShiv.png'
+import swordBreaker from './assets/items/swordBreaker.png'
+import thiefsGlove from './assets/items/thiefsGlove.png'
+import titansResolve from './assets/items/titansResolve.png'
+import trapClaw from './assets/items/trapClaw.png'
+import warmogsArmor from './assets/items/warmogsArmor.png'
+import zekesHerald from './assets/items/zekesHerald.png'
+import zephyr from './assets/items/zephyr.png'
+import zzrotPortal from './assets/items/zzrotPortal.png'
 
 class App extends React.Component {
   constructor() {
@@ -494,6 +540,188 @@ class App extends React.Component {
           imgSrc: zoe,
         },
       ],
+      itemArray: [
+        {
+          name: 'Blade Of The Ruined King',
+          imgSrc: blademasterSpat,
+        },
+        {
+          name: 'Bloodthirster',
+          imgSrc: bloodthirster,
+        },
+        {
+          name: 'Bramble Vest',
+          imgSrc: brambleVest,
+        },
+        {
+          name: 'Celestial Orb',
+          imgSrc: celestialOrb,
+        },
+        {
+          name: 'Chalice Of Favor',
+          imgSrc: chaliceOfFavor,
+        },
+        {
+          name: 'Dark Stars Heart',
+          imgSrc: darkStarsHeart,
+        },
+        {
+          name: 'Deathblade',
+          imgSrc: deathblade,
+        },
+        {
+          name: 'Demolitionists Charge',
+          imgSrc: demolitionistsCharge,
+        },
+        {
+          name: 'Dragons Claw',
+          imgSrc: dragonsClaw,
+        },
+        {
+          name: 'Force Of Nature',
+          imgSrc: forceOfNature,
+        },
+        {
+          name: 'Frozen Heart',
+          imgSrc: frozenHeart,
+        },
+        {
+          name: 'Giant Slayer',
+          imgSrc: giantSlayer,
+        },
+        {
+          name: 'Guardian Angel',
+          imgSrc: guardianAngel,
+        },
+        {
+          name: 'Guinsoos Rageblade',
+          imgSrc: guinsoosRageblade,
+        },
+        {
+          name: 'Hand Of Justice',
+          imgSrc: handOfJustice,
+        },
+        {
+          name: 'Hextech Gunblade',
+          imgSrc: hextechGunblade,
+        },
+        {
+          name: 'Infiltrators Talons',
+          imgSrc: infiltratorsTalons,
+        },
+        {
+          name: 'Infinity Edge',
+          imgSrc: infinityEdge,
+        },
+        {
+          name: 'Ionic Spark',
+          imgSrc: ionicSpark,
+        },
+        {
+          name: 'Jeweled Gauntlet',
+          imgSrc: jeweledGauntlet,
+        },
+        {
+          name: 'Last Whisper',
+          imgSrc: lastWhisper,
+        },
+        {
+          name: 'Locket Of The Iron Solari',
+          imgSrc: locketOfTheIronSolari,
+        },
+        {
+          name: 'Ludens Echo',
+          imgSrc: ludensEcho,
+        },
+        {
+          name: 'Morellonomicon',
+          imgSrc: morellonomicon,
+        },
+        {
+          name: 'Protectors Chestguard',
+          imgSrc: protectorsChestguard,
+        },
+        {
+          name: 'Quicksilver',
+          imgSrc: quicksilver,
+        },
+        {
+          name: 'Rabadons Deathcap',
+          imgSrc: rabadonsDeathcap,
+        },
+        {
+          name: 'Rapidfire Cannon',
+          imgSrc: rapidfireCannon,
+        },
+        {
+          name: 'Rebel Medal',
+          imgSrc: rebelMedal,
+        },
+        {
+          name: 'Red Buff',
+          imgSrc: redBuff,
+        },
+        {
+          name: 'Redemption',
+          imgSrc: redemption,
+        },
+        {
+          name: 'Runaans Hurricane',
+          imgSrc: runaansHurricane,
+        },
+        {
+          name: 'Seraphs Embrace',
+          imgSrc: seraphsEmbrace,
+        },
+        {
+          name: 'Shroud of Stillness',
+          imgSrc: shroudOfStillness,
+        },
+        {
+          name: 'Spear Of Shojin',
+          imgSrc: spearOfShojin,
+        },
+        {
+          name: 'Star Guardians Charm',
+          imgSrc: starGuardiansCharm,
+        },
+        {
+          name: 'Statikk Shiv',
+          imgSrc: statikkShiv,
+        },
+        {
+          name: 'Sword Breaker',
+          imgSrc: swordBreaker,
+        },
+        {
+          name: 'Thiefs Glove',
+          imgSrc: thiefsGlove,
+        },
+        {
+          name: 'Titans Resolve',
+          imgSrc: titansResolve,
+        },
+        {
+          name: 'Trap Claw',
+          imgSrc: trapClaw,
+        },
+        {
+          name: 'Warmogs Armor',
+          imgSrc: warmogsArmor,
+        },
+        {
+          name: 'Zekes Herald',
+          imgSrc: zekesHerald,
+        },
+        {
+          name: 'Zephyr',
+          imgSrc: zephyr,
+        },
+        {
+          name: 'Zzrot Portal',
+          imgSrc: zzrotPortal,
+        },
+      ],
       costFilter: '',
       classFilter: '',
       originFilter: '',
@@ -502,118 +730,147 @@ class App extends React.Component {
       hexList: [
         {
           id: 0,
-          currentChampion: null
+          currentChampion: null,
+          currentItems: []
         },
         {
           id: 1,
-          currentChampion: null
+          currentChampion: null,
+          currentItems: []
         },
         {
           id: 2,
-          currentChampion: null
+          currentChampion: null,
+          currentItems: []
         },
         {
           id: 3,
-          currentChampion: null
+          currentChampion: null,
+          currentItems: []
         },
         {
           id: 4,
-          currentChampion: null
+          currentChampion: null,
+          currentItems: []
         },
         {
           id: 5,
-          currentChampion: null
+          currentChampion: null,
+          currentItems: []
         },
         {
           id: 6,
-          currentChampion: null
+          currentChampion: null,
+          currentItems: []
         },
         {
           id: 7,
-          currentChampion: null
+          currentChampion: null,
+          currentItems: []
         },
         {
           id: 8,
-          currentChampion: null
+          currentChampion: null,
+          currentItems: []
         },
         {
           id: 9,
-          currentChampion: null
+          currentChampion: null,
+          currentItems: []
         },
         {
           id: 10,
-          currentChampion: null
+          currentChampion: null,
+          currentItems: []
         },
         {
           id: 11,
-          currentChampion: null
+          currentChampion: null,
+          currentItems: []
         },
         {
           id: 12,
-          currentChampion: null
+          currentChampion: null,
+          currentItems: []
         },
         {
           id: 13,
-          currentChampion: null
+          currentChampion: null,
+          currentItems: []
         },
         {
           id: 14,
-          currentChampion: null
+          currentChampion: null,
+          currentItems: []
         },
         {
           id: 15,
-          currentChampion: null
+          currentChampion: null,
+          currentItems: []
         },
         {
           id: 16,
-          currentChampion: null
+          currentChampion: null,
+          currentItems: []
         },
         {
           id: 17,
-          currentChampion: null
+          currentChampion: null,
+          currentItems: []
         },
         {
           id: 18,
-          currentChampion: null
+          currentChampion: null,
+          currentItems: []
         },
         {
           id: 19,
-          currentChampion: null
+          currentChampion: null,
+          currentItems: []
         },
         {
           id: 20,
-          currentChampion: null
+          currentChampion: null,
+          currentItems: []
         },
         {
           id: 21,
-          currentChampion: null
+          currentChampion: null,
+          currentItems: []
         },
         {
           id: 22,
-          currentChampion: null
+          currentChampion: null,
+          currentItems: []
         },
         {
           id: 23,
-          currentChampion: null
+          currentChampion: null,
+          currentItems: []
         },
         {
           id: 24,
-          currentChampion: null
+          currentChampion: null,
+          currentItems: []
         },
         {
           id: 25,
-          currentChampion: null
+          currentChampion: null,
+          currentItems: []
         },
         {
           id: 26,
-          currentChampion: null
+          currentChampion: null,
+          currentItems: []
         },
         {
           id: 27,
-          currentChampion: null
+          currentChampion: null,
+          currentItems: []
         },
       ],
       indexOfHexWithMovingChampion: null,
+      rightContainerState: 'champion',
     }
   }
 
@@ -743,6 +1000,14 @@ class App extends React.Component {
   setClassFilter = (e) => {
     this.setState({classFilter: e.target.value}, () => {console.log(this.state.classFilter)})
   }
+  
+  displayChampionList = () => {
+    this.setState({rightContainerState: 'champion'})
+  }
+
+  displayItemsList = () => {
+    this.setState({rightContainerState: 'item'})
+  }
 
   render() {
     const hexGridLoopArray = [0, 1, 2, 3, 4, 5, 6]
@@ -790,8 +1055,26 @@ class App extends React.Component {
                     }
                     draggable
                     >
-                      <div class="hexTop" id={index} ></div>
-                      <div class="hexBottom" id={index} ></div>
+                      <div 
+                      className='hex-item-icon'
+                      style={{
+                        backgroundImage: `url(${''})`
+                      }}
+                      />
+                      <div 
+                      className='hex-item-icon'
+                      style={{
+                        backgroundImage: `url(${''})`
+                      }}
+                      />
+                      <div 
+                      className='hex-item-icon'
+                      style={{
+                        backgroundImage: `url(${''})`
+                      }}
+                      />
+                      <div class="hexTop" id={index}></div>
+                      <div class="hexBottom" id={index}></div>
                     </div>
                   )
                 })
@@ -1007,70 +1290,104 @@ class App extends React.Component {
           </div>
         </div>
         <div className='right-container'>
-          
-          <select className='champion-list-filter' value={this.state.costFilter} onChange={this.setCostFilter}>
-            <option value=''></option>
-            <option value="one">1-Cost</option>
-            <option value="two">2-Cost</option>
-            <option value="three">3-Cost</option>
-            <option value="four">4-Cost</option>
-            <option value="five">5-Cost</option>
-          </select>
-          <select className='champion-list-filter' value={this.state.originFilter} onChange={this.setOriginFilter}>
-            <option value=''></option>
-            <option value="Celestial">Celestial (2/4/6)</option>
-            <option value="Chrono">Chrono (2/4/6)</option>
-            <option value="Cybernetic">Cybernetic (3/6)</option>
-            <option value="Dark Star">Dark Star (3/6)</option>
-            <option value="Mech Pilot">Mech-Pilot (3)</option>
-            <option value="Rebel">Rebel (3/6)</option>
-            <option value="Space Pirate">Space Pirate (2/4</option>
-            <option value="Star Guardian">Star Guardian (3/6)</option>
-            <option value="Valkyrie">Valkyrie (2)</option>
-            <option value="Void">Void (3)</option>
-          </select>
-          <select className='champion-list-filter' value={this.state.classFilter} onChange={this.setClassFilter}>
-            <option value=''></option>
-            <option value="Blademaster">Blademaster (3/6)</option>
-            <option value="Blaster">Blaster (2/4)</option>
-            <option value="Brawler">Brawler (2/4)</option>
-            <option value="Demolitionist">Demolitionist (2)</option>
-            <option value="Infiltrator">Infiltrator (2/4)</option>
-            <option value="Mana Reaver">Mana-Reaver (2/4)</option>
-            <option value="Mercenary">Mercenary (1)</option>
-            <option value="Mystic">Mystic (2/4)</option>
-            <option value="Protector">Protector (2/4)</option>
-            <option value="Sniper">Sniper (2/4)</option>
-            <option value="Sorcerer">Sorcerer (2/4/6)</option>
-            <option value="Starship">Starship (1)</option>
-            <option value="Vanguard">Vanguard (2/4)</option>
-          </select>
-          <div 
-          className='champion-list' 
-          onDrop={this.handleDropOnChampionList} 
-          onDragOver={this.handleDragOver}
-          >
-            {filteredChampionArray.map(champion => {
-              return (
-                <div className='champion-list-box' key={champion.name}>
-                  <img 
-                  className={`champion-list-box-image ${champion.cost} ${champion.draggable === 'no' ? 'opaque' : ''}`} src={champion.imgSrc}
-                  alt=''
-                  draggable={champion.draggable === 'no' ? false : true}
-                  onDragStart={(e) => this.handleDragStart(e, champion.name)}
-                  />
-                  <div className='champion-list-box-tag'>
-                    <div>{champion.name}</div>
-                    <div>
-                      <img draggable={false} className='origin-icon' src={champion.originIcon} alt=''/>
-                      <img draggable={false} className='origin-icon' src={champion.classIcon} alt=''/>
-                      <img draggable={false} className='origin-icon' src={champion.class2Icon} alt=''/>
-                    </div>
-                  </div>
-                </div>
-              )
-            })}
+          <div className='tab-container'>
+            <button className='right-container-tab' onClick={this.displayChampionList}>Champions</button>
+            <button className='right-container-tab' onClick={this.displayItemsList}>Items</button>
           </div>
+          {
+            this.state.rightContainerState === 'champion' 
+            ? 
+            (
+              <div>
+                <select className='champion-list-filter first' value={this.state.costFilter} onChange={this.setCostFilter}>
+                  <option value=''></option>
+                  <option value="one">1-Cost</option>
+                  <option value="two">2-Cost</option>
+                  <option value="three">3-Cost</option>
+                  <option value="four">4-Cost</option>
+                  <option value="five">5-Cost</option>
+                </select>
+                <select className='champion-list-filter ' value={this.state.originFilter} onChange={this.setOriginFilter}>
+                  <option value=''></option>
+                  <option value="Celestial">Celestial (2/4/6)</option>
+                  <option value="Chrono">Chrono (2/4/6)</option>
+                  <option value="Cybernetic">Cybernetic (3/6)</option>
+                  <option value="Dark Star">Dark Star (3/6)</option>
+                  <option value="Mech Pilot">Mech-Pilot (3)</option>
+                  <option value="Rebel">Rebel (3/6)</option>
+                  <option value="Space Pirate">Space Pirate (2/4</option>
+                  <option value="Star Guardian">Star Guardian (3/6)</option>
+                  <option value="Valkyrie">Valkyrie (2)</option>
+                  <option value="Void">Void (3)</option>
+                </select>
+                <select className='champion-list-filter' value={this.state.classFilter} onChange={this.setClassFilter}>
+                  <option value=''></option>
+                  <option value="Blademaster">Blademaster (3/6)</option>
+                  <option value="Blaster">Blaster (2/4)</option>
+                  <option value="Brawler">Brawler (2/4)</option>
+                  <option value="Demolitionist">Demolitionist (2)</option>
+                  <option value="Infiltrator">Infiltrator (2/4)</option>
+                  <option value="Mana Reaver">Mana-Reaver (2/4)</option>
+                  <option value="Mercenary">Mercenary (1)</option>
+                  <option value="Mystic">Mystic (2/4)</option>
+                  <option value="Protector">Protector (2/4)</option>
+                  <option value="Sniper">Sniper (2/4)</option>
+                  <option value="Sorcerer">Sorcerer (2/4/6)</option>
+                  <option value="Starship">Starship (1)</option>
+                  <option value="Vanguard">Vanguard (2/4)</option>
+                </select>
+                <div 
+                className='champion-list' 
+                onDrop={this.handleDropOnChampionList} 
+                onDragOver={this.handleDragOver}
+                >
+                  {filteredChampionArray.map(champion => {
+                    return (
+                      <div className='champion-list-box' key={champion.name}>
+                        <img 
+                        className={`champion-list-box-image ${champion.cost} ${champion.draggable === 'no' ? 'opaque' : ''}`} src={champion.imgSrc}
+                        alt=''
+                        draggable={champion.draggable === 'no' ? false : true}
+                        onDragStart={(e) => this.handleDragStart(e, champion.name)}
+                        />
+                        <div className='champion-list-box-tag'>
+                          <div>{champion.name}</div>
+                          <div>
+                            <img draggable={false} className='origin-icon' src={champion.originIcon} alt=''/>
+                            <img draggable={false} className='origin-icon' src={champion.classIcon} alt=''/>
+                            <img draggable={false} className='origin-icon' src={champion.class2Icon} alt=''/>
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            )
+            :
+            (
+              <div 
+              className='item-list' 
+              // onDrop={this.handleDropOnChampionList} 
+              // onDragOver={this.handleDragOver}
+              >
+                {this.state.itemArray.map((item, i) => {
+                  return (
+                    <div className='item-list-box' key={i}>
+                      <img 
+                      className='item-list-box-image' src={item.imgSrc}
+                      alt=''
+                      // onDragStart={(e) => this.handleDragStart(e, champion.name)}
+                      />
+                      <div className='item-list-box-tag'>
+                        <div>{item.name}</div>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            )
+          }
         </div>
       </div>
     )

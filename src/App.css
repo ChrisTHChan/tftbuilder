@@ -1,3 +1,12 @@
+.hex-item-icon {
+  height: 14.4px;
+  width: 14.4px;
+  background-size: cover;
+  background-position: center;
+  z-index: 3;
+  position: relative;
+}
+
 .top-level-container {
   display: flex;
   justify-content: space-evenly;
@@ -111,12 +120,36 @@
   box-sizing: border-box;
 }
 
+.tab-container {
+  width: 28%;
+  margin: -10px 0 10px 0;
+  position: fixed;
+  height: 55px;
+  background-color: rgb(43, 43, 43);
+  display: flex;
+  align-items: center;
+}
+
+.right-container-tab {
+  color: lightgrey;
+  font-size: 18px;
+  background-color: black;
+  border: 1px solid lightgrey;
+  border-radius: 5px;
+  padding: 5px;
+  margin: 0 10px 0 0;
+}
+
 .right-container::-webkit-scrollbar {
   display: none;
 }
 
 .champion-list-filter {
   margin: 0 5px 0 0;
+}
+
+.champion-list-filter.first {
+  margin-top: 50px;
 }
 
 .champion-list {
@@ -163,6 +196,31 @@
 .champion-list-box-tag {
   width: 100%;
   margin: 0;
+  text-align: center;
+  color: lightgrey;
+}
+
+.item-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: 50px;
+}
+
+.item-list-box {
+  width: 90%;
+  height: auto;
+}
+
+.item-list-box-image {
+  width: 100%;
+  height: auto;
+  box-sizing: border-box;
+  border: 2.5px solid lightgrey;
+}
+
+.item-list-box-tag {
+  width: 100%;
+  margin: 0 0 10px 0;
   text-align: center;
   color: lightgrey;
 }

@@ -265,3 +265,12 @@
   width: 15px;
   height: auto;
 }
+
+.clear {
+  margin: 10px 10px 0 0;
+  background-color: black;
+  border: 1px solid lightgrey;
+  color: lightgrey;
+  border-radius: 5px;
+  padding: 5px;
+}

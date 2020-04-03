@@ -1,27 +1,16 @@
-.hex-item-icon {
-  height: 20px;
-  width: 20px;
-  background-size: cover;
-  background-position: center;
-  z-index: 3;
-  position: relative;
-  border-radius: 15px;
-}
-
 .top-level-container {
   display: flex;
-  justify-content: space-evenly;
   width: 100vw;
   height: 100vh;
   background-color: rgb(43, 43, 43);
 }
 
 .left-container {
-  width: 70%;
+  width: 50%;
   height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: evenly;
   padding: 25px;
   box-sizing: border-box;
 }
@@ -29,6 +18,22 @@
 .hex-grid {
   height: 50%;
   margin: 0 0 50px 0;
+}
+
+.notes-container {
+  height: 50%;
+}
+
+.notes-container-header {
+  color: lightgrey;
+  font-size: 20px;
+  margin: 0 0 10px 0;
+  text-decoration: underline;
+}
+
+.notes-container-note {
+  color: lightgrey;
+  font-size: 14px;
 }
 
 .hex-grid-row {
@@ -112,6 +117,23 @@
   background: inherit;
 }
 
+.hex-item-icon {
+  height: 20px;
+  width: 20px;
+  background-size: cover;
+  background-position: center;
+  z-index: 3;
+  position: relative;
+  border-radius: 15px;
+}
+
+.middle-container {
+  height: 100%;
+  width: 20%;
+  padding: 20px 0 0 0;
+  box-sizing: border-box;
+}
+
 .right-container {
   height: 100%;
   width: 30%;
@@ -129,16 +151,30 @@
   background-color: rgb(43, 43, 43);
   display: flex;
   align-items: center;
+  z-index: 2;
 }
 
 .right-container-tab {
   color: lightgrey;
   font-size: 18px;
-  background-color: black;
-  border: 1px solid lightgrey;
-  border-radius: 5px;
+  background-color: rgb(43, 43, 43);
+  border: none;
   padding: 5px;
   margin: 0 10px 0 0;
+  box-sizing: border-box;
+}
+
+.right-container-tab:focus {
+  outline: 0;
+}
+
+.right-container-tab:hover {
+  border-bottom: 1px solid lightgrey;
+  cursor: pointer;
+}
+
+.right-container-tab.active {
+  border-bottom: 1px solid lightgrey;
 }
 
 .right-container::-webkit-scrollbar {
@@ -150,7 +186,7 @@
 }
 
 .champion-list-filter.first {
-  margin-top: 50px;
+  margin-top: 45px;
 }
 
 .champion-list {
@@ -192,6 +228,8 @@
 
 .champion-list-box-image.opaque {
   opacity: 0.5;
+  position: relative;
+  z-index: 1;
 }
 
 .champion-list-box-tag {
@@ -204,7 +242,7 @@
 .item-list {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  margin-top: 50px;
+  margin: 13px 0 0 0;
 }
 
 .item-list-box {
@@ -227,18 +265,20 @@
 }
 
 .team-info-container {
-  height: 50%;
+  height: 100%;
+  overflow-y: scroll;
+  -ms-overflow-style: none;
+}
+
+.team-info-container::-webkit-scrollbar {
+  display: none;
 }
 
 .team-info-header {
   color: lightgrey;
   font-size: 20px;
   margin: 0 0 10px 0;
-}
-
-.team-info-member-container {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  text-decoration: underline;
 }
 
 .team-info-synergy-name {
@@ -273,4 +313,41 @@
   color: lightgrey;
   border-radius: 5px;
   padding: 5px;
+}
+
+.clear:hover {
+  cursor: pointer;
+}
+
+.clear-items {
+  margin: 45px 10px 0 0;
+  background-color: black;
+  border: 1px solid lightgrey;
+  color: lightgrey;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.clear-items:hover {
+  cursor: pointer
+}
+
+.add-note-box {
+  width: 95%;
+  height: 200px;
+  margin: 50px 0 0 0;
+  resize: none;
+}
+
+.add-note-button {
+  margin: 10px 0 0 0;
+  background-color: black;
+  border: 1px solid lightgrey;
+  color: lightgrey;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.add-note-button:hover {
+  cursor: pointer;
 }

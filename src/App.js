@@ -1,12 +1,15 @@
 //KNOWN BUGS:
-//if you move a champ from the board to off the board (into no mans land) and then move a new champ from the list to a hex,
-//the champ from no mans land will move to said hex instead of the new champ from the list
+//figure out how to make empty hexes UNDRAGGABLE (this ones annoying)
+
+//THINGS I WANT TO ADD:
+//option to make notes about a comp
+//option to save a comp and be able view it later (READ ONLY), and delete the comps you saved.
+//option to filter out items based on ingredients (will be aids)
 
 import React from 'react';
 import './App.css';
 import championArrayData from './championArray.js'
 import itemArrayData from './itemArray.js'
-//class icon imports
 import starGuardian from './assets/classes/starguardian.png'
 import sorcerer from './assets/classes/sorcerer.png'
 import blademaster from './assets/classes/blademaster.png'
@@ -37,15 +40,17 @@ class App extends React.Component {
     this.state = {
       championArray: championArrayData,
       itemArray: itemArrayData,
+      hexList: [],
+      notesList: [],
+      synergyList: [],
+      synergyCount: {},
       costFilter: '',
       classFilter: '',
       originFilter: '',
-      synergyList: [],
-      synergyCount: {},
-      hexList: [],
       areWeMovingItem: false,
       indexOfHexWithMovingChampion: null,
       rightContainerState: 'champion',
+      noteBoxValue: ''
     }
   }
 
@@ -87,8 +92,27 @@ class App extends React.Component {
   }
 
 
+  clearItems = () => {
+    let newHexList = this.state.hexList
+    newHexList.forEach(hex => {
+      hex.currentItems = []
+    })
+    this.setState({hexList: newHexList})
+  }
+
+
   handleDragStart = (e, championName) => {
     e.dataTransfer.setData('championName', championName)
+  }
+
+
+  endDragFromHexWithChampion = () => {
+    this.setState({indexOfHexWithMovingChampion: null})
+  }
+
+  
+  endDragFromItemList = () => {
+    this.setState({areWeMovingItem: null})
   }
 
 
@@ -113,26 +137,30 @@ class App extends React.Component {
       return championToFind === champion
     })
 
-    newHexList[this.state.indexOfHexWithMovingChampion].currentChampion.draggable = 'yes'
-    newChampionArray[indexOfChampion(newHexList[this.state.indexOfHexWithMovingChampion].currentChampion)] = newHexList[this.state.indexOfHexWithMovingChampion].currentChampion
-    this.setState({championArray: newChampionArray})
+    if (newHexList[this.state.indexOfHexWithMovingChampion]) {
+      newHexList[this.state.indexOfHexWithMovingChampion].currentChampion.draggable = 'yes'
+      newChampionArray[indexOfChampion(newHexList[this.state.indexOfHexWithMovingChampion].currentChampion)] = newHexList[this.state.indexOfHexWithMovingChampion].currentChampion
+      this.setState({championArray: newChampionArray})
 
-    newHexList[this.state.indexOfHexWithMovingChampion].currentItems = []
+      newHexList[this.state.indexOfHexWithMovingChampion].currentItems = []
 
-    if (newHexList[this.state.indexOfHexWithMovingChampion].currentChampion.traits) {
-      newHexList[this.state.indexOfHexWithMovingChampion].currentChampion.traits.forEach(trait => {
-        const indexOfTrait = newSynergyList.indexOf(trait)
-        if (newSynergyList.includes(trait)) {
-          newSynergyCount[trait] = newSynergyCount[trait] -1
-          if (newSynergyCount[trait] === 0) {
-            if (indexOfTrait > -1) {
-              newSynergyList.splice(indexOfTrait, 1)
+      if (newHexList[this.state.indexOfHexWithMovingChampion].currentChampion.traits) {
+        newHexList[this.state.indexOfHexWithMovingChampion].currentChampion.traits.forEach(trait => {
+          const indexOfTrait = newSynergyList.indexOf(trait)
+          if (newSynergyList.includes(trait)) {
+            newSynergyCount[trait] = newSynergyCount[trait] -1
+            if (newSynergyCount[trait] === 0) {
+              if (indexOfTrait > -1) {
+                newSynergyList.splice(indexOfTrait, 1)
+              }
             }
           }
-        }
-      })
-      this.setState({synergyList: newSynergyList})
-      this.setState({synergyCount: newSynergyCount})
+        })
+        this.setState({synergyList: newSynergyList})
+        this.setState({synergyCount: newSynergyCount})
+      }
+    } else {
+      return
     }
 
     newHexList[this.state.indexOfHexWithMovingChampion].currentChampion = null
@@ -232,17 +260,31 @@ class App extends React.Component {
 
 
   setCostFilter = (e) => {
-    this.setState({costFilter: e.target.value}, () => {console.log(this.state.costFilter)})
+    this.setState({costFilter: e.target.value})
   }
 
 
   setOriginFilter = (e) => {
-    this.setState({originFilter: e.target.value}, () => {console.log(this.state.originFilter)})
+    this.setState({originFilter: e.target.value})
   }
 
 
   setClassFilter = (e) => {
-    this.setState({classFilter: e.target.value}, () => {console.log(this.state.classFilter)})
+    this.setState({classFilter: e.target.value})
+  }
+
+
+  handleNoteBoxChange = (e) => {
+    this.setState({noteBoxValue: e.target.value})
+  }
+
+  appendNote = () => {
+    let newNotesList = this.state.notesList
+    if (this.state.noteBoxValue) {
+      newNotesList.push(this.state.noteBoxValue)
+      this.setState({noteBoxValue: ''})
+      this.setState({notesList: newNotesList})
+    }
   }
   
 
@@ -253,6 +295,10 @@ class App extends React.Component {
 
   displayItemsList = () => {
     this.setState({rightContainerState: 'item'})
+  }
+
+  displayNotes = () => {
+    this.setState({rightContainerState: 'notes'})
   }
 
   render() {
@@ -289,6 +335,7 @@ class App extends React.Component {
                     onDragOver={this.handleDragOver}
                     onDrop={this.handleDropOnHex}
                     onDragStart={this.handleDragFromHexWithChampion}
+                    onDragEnd={this.endDragFromHexWithChampion}
                     id={index}
                     style={
                       this.state.hexList[index].currentChampion
@@ -355,6 +402,7 @@ class App extends React.Component {
                     onDragOver={this.handleDragOver}
                     onDrop={this.handleDropOnHex}
                     onDragStart={this.handleDragFromHexWithChampion}
+                    onDragEnd={this.endDragFromHexWithChampion}
                     id={index + 7}
                     style={
                       this.state.hexList[index + 7].currentChampion
@@ -421,6 +469,7 @@ class App extends React.Component {
                     onDragOver={this.handleDragOver}
                     onDrop={this.handleDropOnHex}
                     onDragStart={this.handleDragFromHexWithChampion}
+                    onDragEnd={this.endDragFromHexWithChampion}
                     id={index + 14}
                     style={
                       this.state.hexList[index + 14].currentChampion
@@ -487,6 +536,7 @@ class App extends React.Component {
                     onDragOver={this.handleDragOver}
                     onDrop={this.handleDropOnHex}
                     onDragStart={this.handleDragFromHexWithChampion}
+                    onDragEnd={this.endDragFromHexWithChampion}
                     id={index + 21}
                     style={
                       this.state.hexList[index + 21].currentChampion
@@ -546,9 +596,19 @@ class App extends React.Component {
               }
             </div>
           </div>
+          <div className='notes-container'>
+            <p className='notes-container-header'>Notes for this Comp:</p>
+            <ol>
+              {this.state.notesList.map(note => {
+                return <li className='notes-container-note'>{note}</li>
+              })}
+            </ol>
+          </div>
+        </div>
+        <div className='middle-container'>
           <div className='team-info-container'>
             <p className='team-info-header'>Your Current Synergies:</p>
-            <div className='team-info-member-container'>
+            <div>
               {
                 this.state.synergyList.map(synergy => {
                   let threshold, level, iconImgSrc
@@ -658,8 +718,12 @@ class App extends React.Component {
                     if (this.state.synergyCount[synergy] >= 3) {
                       level = 'gold'
                     }
-                  } else {
+                  } else if (synergy === 'Mercenary') {
                     iconImgSrc = mercenary
+                    threshold = 1
+                    level = 'gold'
+                  } else {
+                    iconImgSrc = starShip
                     threshold = 1
                     level = 'gold'
                   }
@@ -675,8 +739,9 @@ class App extends React.Component {
         </div>
         <div className='right-container'>
           <div className='tab-container'>
-            <button className='right-container-tab' onClick={this.displayChampionList}>Champions</button>
-            <button className='right-container-tab' onClick={this.displayItemsList}>Items</button>
+            <button className={`right-container-tab ${this.state.rightContainerState === 'champion' ? 'active' : 'null'}`} onClick={this.displayChampionList}>Champions</button>
+            <button className={`right-container-tab ${this.state.rightContainerState === 'item' ? 'active' : 'null'}`} onClick={this.displayItemsList}>Items</button>
+            <button className={`right-container-tab ${this.state.rightContainerState === 'notes' ? 'active' : 'null'}`} onClick={this.displayNotes}>Notes</button>
           </div>
           {
             this.state.rightContainerState === 'champion'
@@ -763,28 +828,65 @@ class App extends React.Component {
               </div>
             )
             :
+            null
+          }
+          {
+            this.state.rightContainerState === 'item'
+            ?
             (
-              <div 
-              className='item-list' 
-              onDrop={this.handleDropOnChampionList}
-              onDragOver={this.handleDragOver}
-              >
-                {this.state.itemArray.map((item, i) => {
-                  return (
-                    <div className='item-list-box' key={i}>
-                      <img 
-                      className='item-list-box-image' src={item.imgSrc}
-                      alt=''
-                      onDragStart={(e) => this.handleDragFromItemList(e, item.name)}
-                      />
-                      <div className='item-list-box-tag'>
-                        <div>{item.name}</div>
+              <div>
+                <div>
+                  <button 
+                  className='clear-items'
+                  onClick={this.clearItems}
+                  >
+                    Clear Items
+                  </button>
+                </div>
+                <div 
+                className='item-list' 
+                onDrop={this.handleDropOnChampionList}
+                onDragOver={this.handleDragOver}
+                >
+                  {this.state.itemArray.map((item, i) => {
+                    return (
+                      <div className='item-list-box' key={i}>
+                        <img 
+                        className='item-list-box-image' src={item.imgSrc}
+                        alt=''
+                        onDragStart={(e) => this.handleDragFromItemList(e, item.name)}
+                        onDragEnd={this.endDragFromItemList}
+                        />
+                        <div className='item-list-box-tag'>
+                          <div>{item.name}</div>
+                        </div>
                       </div>
-                    </div>
-                  )
-                })}
+                    )
+                  })}
+                </div>
+              </div>
+              )
+              :
+              null
+          }
+          {
+            this.state.rightContainerState === 'notes' 
+            ?
+            (
+              <div>
+                <textarea 
+                className='add-note-box' 
+                value={this.state.noteBoxValue}
+                onChange={this.handleNoteBoxChange}
+                ></textarea>
+                <button 
+                className='add-note-button'
+                onClick={this.appendNote}
+                >Add Note</button>
               </div>
             )
+            :
+            null
           }
         </div>
       </div>

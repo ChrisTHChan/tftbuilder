@@ -1,8 +1,7 @@
 //KNOWN BUGS:
-//figure out how to make empty hexes UNDRAGGABLE (this ones annoying)
+//when displaying a saved comp, the champs in the comp, are not made undraggable.
 
 //THINGS I WANT TO ADD:
-//option to make notes about a comp
 //option to save a comp and be able view it later (READ ONLY), and delete the comps you saved.
 //option to filter out items based on ingredients (will be aids)
 
@@ -40,6 +39,7 @@ class App extends React.Component {
     this.state = {
       championArray: championArrayData,
       itemArray: itemArrayData,
+      savedComps: [],
       hexList: [],
       notesList: [],
       synergyList: [],
@@ -50,13 +50,64 @@ class App extends React.Component {
       areWeMovingItem: false,
       indexOfHexWithMovingChampion: null,
       rightContainerState: 'champion',
-      noteBoxValue: ''
+      noteBoxValue: '',
+      compName: ''
     }
   }
 
   componentWillMount() {
     this.clearAll()
   }
+
+
+  saveComp = (e) => {
+    let newSavedComps = this.state.savedComps
+    const nameUsed = newSavedComps.find(comp => {
+      return comp.compName === this.state.compName
+    })
+
+    if (!nameUsed) {
+      newSavedComps.push({
+        compName: this.state.compName,
+        hexList: this.state.hexList,
+        notesList: this.state.notesList,
+        synergyList: this.state.synergyList,
+        synergyCount: this.state.synergyCount,
+      })
+  
+      this.setState({savedComps: newSavedComps}, () => {console.log(this.state.savedComps)})
+      this.setState({compName: ''})
+      this.clearAll()
+    } else {
+      alert('Please use unique names for different comps.')
+    }
+  }
+
+
+  displaySavedComp = (e) => {
+    this.clearAll()
+    const newSavedComps = this.state.savedComps
+    const indexOfDesiredComp = newSavedComps.findIndex(comp => {
+      return comp.compName === e.target.id
+    })
+    const desiredComp = this.state.savedComps[indexOfDesiredComp]
+    this.setState({hexList: desiredComp.hexList})
+    this.setState({notesList: desiredComp.notesList})
+    this.setState({synergyList: desiredComp.synergyList})
+    this.setState({synergyCount: desiredComp.synergyCount})
+  }
+
+
+  deleteSavedComp = (e) => {
+    const newSavedComps = this.state.savedComps
+    const indexOfDesiredComp = newSavedComps.findIndex(comp => {
+      return comp.compName === e.target.id
+    })
+    newSavedComps.splice(indexOfDesiredComp, 1)
+    this.setState({savedComps: newSavedComps})
+    this.clearAll()
+  }
+
 
   clearAll = () => {
     let newHexList = []
@@ -74,10 +125,11 @@ class App extends React.Component {
       champion.draggable = 'yes'
     })
 
-    this.setState({championArray: freshChampionArray})
+    this.setState({championArray: freshChampionArray}) 
     this.setState({synergyList: []})
     this.setState({synergyCount: {}})
     this.setState({hexList: newHexList})
+    this.setState({notesList: []})
   }
 
   handleDragOver = (e) => {
@@ -301,6 +353,10 @@ class App extends React.Component {
     this.setState({rightContainerState: 'notes'})
   }
 
+  displayComps = () => {
+    this.setState({rightContainerState: 'comps'})
+  }
+
   render() {
     const hexGridLoopArray = [0, 1, 2, 3, 4, 5, 6]
     let filteredChampionArray = this.state.championArray
@@ -331,10 +387,16 @@ class App extends React.Component {
               {
                 hexGridLoopArray.map((index) => {
                   return (
-                    <div class="hexagon"
+                    <div className="hexagon"
                     onDragOver={this.handleDragOver}
                     onDrop={this.handleDropOnHex}
-                    onDragStart={this.handleDragFromHexWithChampion}
+                    onDragStart={
+                      this.state.hexList[index].currentChampion 
+                      ? 
+                      this.handleDragFromHexWithChampion 
+                      :
+                      (e) => {e.preventDefault()}
+                    }
                     onDragEnd={this.endDragFromHexWithChampion}
                     id={index}
                     style={
@@ -347,6 +409,7 @@ class App extends React.Component {
                       {}
                     }
                     draggable
+                    key={index}
                     >
                       <div 
                       className='hex-item-icon'
@@ -387,8 +450,8 @@ class App extends React.Component {
                         {}
                       }
                       />
-                      <div class="hexTop" id={index}></div>
-                      <div class="hexBottom" id={index}></div>
+                      <div className="hexTop" id={index}></div>
+                      <div className="hexBottom" id={index}></div>
                     </div>
                   )
                 })
@@ -398,10 +461,16 @@ class App extends React.Component {
             {
                 hexGridLoopArray.map((index) => {
                   return (
-                    <div class="hexagon"
+                    <div className="hexagon"
                     onDragOver={this.handleDragOver}
                     onDrop={this.handleDropOnHex}
-                    onDragStart={this.handleDragFromHexWithChampion}
+                    onDragStart={
+                      this.state.hexList[index + 7].currentChampion 
+                      ? 
+                      this.handleDragFromHexWithChampion 
+                      :
+                      (e) => {e.preventDefault()}
+                    }
                     onDragEnd={this.endDragFromHexWithChampion}
                     id={index + 7}
                     style={
@@ -414,6 +483,7 @@ class App extends React.Component {
                       {}
                     }
                     draggable
+                    key={index + 7}
                     >
                       <div 
                       className='hex-item-icon'
@@ -454,8 +524,8 @@ class App extends React.Component {
                         {}
                       }
                       />
-                      <div class="hexTop" id={index + 7}></div>
-                      <div class="hexBottom" id={index + 7}></div>
+                      <div className="hexTop" id={index + 7}></div>
+                      <div className="hexBottom" id={index + 7}></div>
                     </div>
                   )
                 })
@@ -465,10 +535,16 @@ class App extends React.Component {
             {
                 hexGridLoopArray.map((index) => {
                   return (
-                    <div class="hexagon"
+                    <div className="hexagon"
                     onDragOver={this.handleDragOver}
                     onDrop={this.handleDropOnHex}
-                    onDragStart={this.handleDragFromHexWithChampion}
+                    onDragStart={
+                      this.state.hexList[index + 14].currentChampion 
+                      ? 
+                      this.handleDragFromHexWithChampion 
+                      :
+                      (e) => {e.preventDefault()}
+                    }
                     onDragEnd={this.endDragFromHexWithChampion}
                     id={index + 14}
                     style={
@@ -481,6 +557,7 @@ class App extends React.Component {
                       {}
                     }
                     draggable
+                    key={index + 14}
                     >
                       <div 
                       className='hex-item-icon'
@@ -521,8 +598,8 @@ class App extends React.Component {
                         {}
                       }
                       />
-                      <div class="hexTop" id={index + 14}></div>
-                      <div class="hexBottom" id={index + 14}></div>
+                      <div className="hexTop" id={index + 14}></div>
+                      <div className="hexBottom" id={index + 14}></div>
                     </div>
                   )
                 })
@@ -532,10 +609,16 @@ class App extends React.Component {
             {
                 hexGridLoopArray.map((index) => {
                   return (
-                    <div class="hexagon"
+                    <div className="hexagon"
                     onDragOver={this.handleDragOver}
                     onDrop={this.handleDropOnHex}
-                    onDragStart={this.handleDragFromHexWithChampion}
+                    onDragStart={
+                      this.state.hexList[index + 21].currentChampion 
+                      ? 
+                      this.handleDragFromHexWithChampion 
+                      :
+                      (e) => {e.preventDefault()}
+                    }
                     onDragEnd={this.endDragFromHexWithChampion}
                     id={index + 21}
                     style={
@@ -548,6 +631,7 @@ class App extends React.Component {
                       {}
                     }
                     draggable
+                    key={index + 21}
                     >
                       <div 
                       className='hex-item-icon'
@@ -588,8 +672,8 @@ class App extends React.Component {
                         {}
                       }
                       />
-                      <div class="hexTop" id={index + 21}></div>
-                      <div class="hexBottom" id={index + 21}></div>
+                      <div className="hexTop" id={index + 21}></div>
+                      <div className="hexBottom" id={index + 21}></div>
                     </div>
                   )
                 })
@@ -742,6 +826,7 @@ class App extends React.Component {
             <button className={`right-container-tab ${this.state.rightContainerState === 'champion' ? 'active' : 'null'}`} onClick={this.displayChampionList}>Champions</button>
             <button className={`right-container-tab ${this.state.rightContainerState === 'item' ? 'active' : 'null'}`} onClick={this.displayItemsList}>Items</button>
             <button className={`right-container-tab ${this.state.rightContainerState === 'notes' ? 'active' : 'null'}`} onClick={this.displayNotes}>Notes</button>
+            <button className={`right-container-tab ${this.state.rightContainerState === 'comps' ? 'active' : 'null'}`} onClick={this.displayComps}>Comps</button>
           </div>
           {
             this.state.rightContainerState === 'champion'
@@ -873,7 +958,10 @@ class App extends React.Component {
             this.state.rightContainerState === 'notes' 
             ?
             (
-              <div>
+              <div
+              onDrop={this.handleDropOnChampionList}
+              onDragOver={this.handleDragOver}
+              >
                 <textarea 
                 className='add-note-box' 
                 value={this.state.noteBoxValue}
@@ -883,6 +971,71 @@ class App extends React.Component {
                 className='add-note-button'
                 onClick={this.appendNote}
                 >Add Note</button>
+              </div>
+            )
+            :
+            null
+          }
+          {
+            this.state.rightContainerState === 'comps'
+            ?
+            (
+              <div
+              onDrop={this.handleDropOnChampionList}
+              onDragOver={this.handleDragOver}
+              >
+                <input
+                className='save-comp-name-input'
+                placeholder='Enter your comps name'
+                value={this.state.compName}
+                onChange={(e) => {this.setState({compName: e.target.value})}}
+                onKeyUp={(e) => {
+                  if (e.key === 'Enter' && this.state.compName) {
+                    this.saveComp()
+                  }
+                }}
+                />
+                <button
+                className={!this.state.compName ? 'save-comp-button-inactive' : 'save-comp-button-active'}
+                onClick={this.saveComp}
+                disabled={
+                  !this.state.compName ? true : false
+                }
+                >
+                  Save Current Comp
+                </button>
+                {this.state.savedComps.length === 0 
+                ?
+                <div
+                className='comp-list-empty-message'
+                >
+                  You currently have no saved comps.
+                </div>
+                :
+                this.state.savedComps.map(comp => {
+                  return (
+                    <div
+                    className='comp-list-comp-container'
+                    key={comp.compName}
+                    >
+                      <div 
+                      id={comp.compName}
+                      onClick={this.displaySavedComp}
+                      className='comp-list-comp'
+                      > 
+                        {comp.compName}
+                      </div>
+                      <button
+                      className='comp-list-delete-button'
+                      onClick={this.deleteSavedComp}
+                      id={comp.compName}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  )
+                })
+                }
               </div>
             )
             :

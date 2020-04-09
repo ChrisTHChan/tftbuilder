@@ -931,10 +931,9 @@ class App extends React.Component {
                 How to use TFTbuilder:
               </DialogTitle>
               <DialogContent>
-                Use the the different list options you have to the right in order to add 
-                different champions and items you want in your team composition. You can add
-                items and champions by dragging the respective image of what you want over to the
-                hex you want it in.
+                You can add items and champions by dragging the respective image of what you want over to the
+                hex you want it in. You can also remove champions by moving them from the hex their currently
+                residing in to the list on the right.
               </DialogContent>
               <DialogContent>
                 Under the notes section you can look to add specific informative tid-bits about the team composition

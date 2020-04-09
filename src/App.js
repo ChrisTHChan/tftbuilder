@@ -1,10 +1,11 @@
 //THINGS I WANT TO ADD:
-//add how to use tab somewhere
-//saved comps into local storage
-//option to filter out items based on ingredients (will be aids)
+//add information divs on hover for items and champions
 
 import React from 'react';
 import './App.css';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import Dialog from '@material-ui/core/Dialog';
 import championArrayData from './championArray.js'
 import itemArrayData from './itemArray.js'
 import starGuardian from './assets/classes/starguardian.png'
@@ -32,6 +33,7 @@ import vanguard from './assets/classes/vanguard.png'
 import void1 from './assets/classes/void.png'
 
 class App extends React.Component {
+  documentData;
   constructor() {
     super()
     this.state = {
@@ -49,12 +51,21 @@ class App extends React.Component {
       indexOfHexWithMovingChampion: null,
       rightContainerState: 'champion',
       noteBoxValue: '',
-      compName: ''
+      compName: '',
+      showHelpDialog: false,
     }
   }
 
   componentWillMount() {
     this.clearAll()
+  }
+
+
+  componentDidMount() {
+    this.documentData = JSON.parse(localStorage.getItem('savedComps'))
+    if (localStorage.getItem('savedComps')) {
+      this.setState({savedComps: this.documentData})
+    }
   }
 
 
@@ -72,7 +83,8 @@ class App extends React.Component {
         synergyList: this.state.synergyList,
         synergyCount: this.state.synergyCount,
       })
-  
+      
+      localStorage.setItem('savedComps', JSON.stringify(newSavedComps))
       this.setState({savedComps: newSavedComps})
       this.setState({compName: ''})
       this.clearAll()
@@ -131,9 +143,20 @@ class App extends React.Component {
     const indexOfDesiredComp = newSavedComps.findIndex(comp => {
       return comp.compName === e.target.id
     })
-    newSavedComps.splice(indexOfDesiredComp, 1)
-    this.setState({savedComps: newSavedComps})
-    this.clearAll()
+    this.documentData = JSON.parse(localStorage.getItem('savedComps'))
+    
+    const deleteCheck = window.confirm('Do you really want to delete this comp?') 
+
+    if (deleteCheck) {
+      newSavedComps.splice(indexOfDesiredComp, 1)
+      if (localStorage.getItem('savedComps')) {
+        localStorage.setItem('savedComps', JSON.stringify(newSavedComps))
+      }
+      this.setState({savedComps: newSavedComps})
+      this.clearAll()
+    } else {
+      return
+    }
   }
 
 
@@ -294,6 +317,10 @@ class App extends React.Component {
       if (newHexList[e.target.id].currentItems.length < 3 && newHexList[e.target.id].currentChampion) {
         newHexList[e.target.id].currentItems.push(itemToAddFromItemList[0])
         this.setState({hexList: newHexList})
+      } else if (newHexList[e.target.id].currentItems.length === 3) {
+        alert('Champions can only carry up to 3 items.')
+      } else if (!newHexList[e.target.id].currentChampion) {
+        alert('Items can only be added to a champion.')
       }
     } else {
       if (!this.state.indexOfHexWithMovingChampion) {
@@ -428,6 +455,7 @@ class App extends React.Component {
       }
     })
     return (
+      
       <div className='top-level-container'>
         <div className='left-container'>
           <div className='hex-grid'>
@@ -891,6 +919,40 @@ class App extends React.Component {
             <button className={`right-container-tab ${this.state.rightContainerState === 'item' ? 'active' : 'null'}`} onClick={this.displayItemsList}>Items</button>
             <button className={`right-container-tab ${this.state.rightContainerState === 'notes' ? 'active' : 'null'}`} onClick={this.displayNotes}>Notes</button>
             <button className={`right-container-tab ${this.state.rightContainerState === 'comps' ? 'active' : 'null'}`} onClick={this.displayComps}>Comps</button>
+            <button 
+            className='right-container-info-tab'
+            onClick={() => {this.setState({showHelpDialog: true})}}
+            >i</button>
+            <Dialog
+            open={this.state.showHelpDialog}
+            onClose={() => {this.setState({showHelpDialog: false})}}
+            >
+              <DialogTitle>
+                How to use TFTbuilder:
+              </DialogTitle>
+              <DialogContent>
+                Use the the different list options you have to the right in order to add 
+                different champions and items you want in your team composition. You can add
+                items and champions by dragging the respective image of what you want over to the
+                hex you want it in.
+              </DialogContent>
+              <DialogContent>
+                Under the notes section you can look to add specific informative tid-bits about the team composition
+                you are creating, so that when you get into game you can remind yourself about what you
+                need to do to succeed.
+              </DialogContent>
+              <DialogContent>
+                Once you are done, you can go to the comps tab to save your current composition, as well as view and delete
+                other compositions you have already built. Your comps will still be here even when you leave the site,
+                so don't worry about losing them!
+              </DialogContent>
+              <DialogContent>
+                This tool can be used to consolidate all the information you find on other sites about all the
+                current meta compositions, so that you can have all the information you need during your game in one 
+                convenient spot, no matter what items or champions you're given. You can also build upon comps that you've
+                already saved! Please enjoy this tool, and I hope you find great use with it!
+              </DialogContent>
+            </Dialog>
           </div>
           {
             this.state.rightContainerState === 'champion'
@@ -1035,6 +1097,11 @@ class App extends React.Component {
                 className='add-note-button'
                 onClick={this.appendNote}
                 >Add Note</button>
+                <button className='add-note-button'
+                onClick={() => {this.setState({notesList: []})}}
+                >
+                  Clear All Notes
+                </button>
               </div>
             )
             :

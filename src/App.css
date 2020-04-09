@@ -22,6 +22,10 @@
 
 .notes-container {
   height: 50%;
+  overflow-wrap: break-word;
+  -ms-word-wrap: break-word;
+  word-wrap: break-word;
+  -ms-hyphens: auto;
 }
 
 .notes-container-header {
@@ -184,6 +188,22 @@
 
 .right-container::-webkit-scrollbar {
   display: none;
+}
+
+.right-container-info-tab {
+  color: lightgrey;
+  background-color: rgb(43, 43, 43);
+  border-radius: 50px;
+  font-size: 28px;
+  -webkit-text-fill-color: rgb(43, 43, 43);;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: lightgrey;
+  width: 35px;
+  height: 35px;
+}
+
+.right-container-info-tab:focus {
+  outline: none;
 }
 
 .champion-list-filter {
@@ -363,7 +383,7 @@
 }
 
 .add-note-button {
-  margin: 10px 0 0 0;
+  margin: 10px 10px 0 0;
   background-color: black;
   border: 1px solid lightgrey;
   color: lightgrey;

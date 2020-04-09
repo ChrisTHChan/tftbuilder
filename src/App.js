@@ -1,8 +1,6 @@
-//KNOWN BUGS:
-//when displaying a saved comp, the champs in the comp, are not made undraggable.
-
 //THINGS I WANT TO ADD:
-//option to save a comp and be able view it later (READ ONLY), and delete the comps you saved.
+//add how to use tab somewhere
+//saved comps into local storage
 //option to filter out items based on ingredients (will be aids)
 
 import React from 'react';
@@ -60,8 +58,8 @@ class App extends React.Component {
   }
 
 
-  saveComp = (e) => {
-    let newSavedComps = this.state.savedComps
+  saveComp = () => {
+    let newSavedComps = [...this.state.savedComps]
     const nameUsed = newSavedComps.find(comp => {
       return comp.compName === this.state.compName
     })
@@ -75,7 +73,7 @@ class App extends React.Component {
         synergyCount: this.state.synergyCount,
       })
   
-      this.setState({savedComps: newSavedComps}, () => {console.log(this.state.savedComps)})
+      this.setState({savedComps: newSavedComps})
       this.setState({compName: ''})
       this.clearAll()
     } else {
@@ -85,16 +83,46 @@ class App extends React.Component {
 
 
   displaySavedComp = (e) => {
-    this.clearAll()
-    const newSavedComps = this.state.savedComps
+    const newChampionArray = this.state.championArray
+    const newSavedComps = [...this.state.savedComps]
+    const spreadHexList = []
     const indexOfDesiredComp = newSavedComps.findIndex(comp => {
       return comp.compName === e.target.id
     })
-    const desiredComp = this.state.savedComps[indexOfDesiredComp]
-    this.setState({hexList: desiredComp.hexList})
-    this.setState({notesList: desiredComp.notesList})
-    this.setState({synergyList: desiredComp.synergyList})
-    this.setState({synergyCount: desiredComp.synergyCount})
+    const desiredComp = newSavedComps[indexOfDesiredComp]
+
+    this.clearAll()
+
+      desiredComp.hexList.forEach(hex => {
+      if (hex.currentChampion) {
+        const index = newChampionArray.findIndex(champion => {
+          return hex.currentChampion.name === champion.name
+        })
+        newChampionArray[index].draggable = 'no'
+      }
+    })
+
+    desiredComp.hexList.forEach((hex, i) => {
+      if (hex.currentChampion) {
+        spreadHexList.push({
+          id: i,
+          currentChampion: {...hex.currentChampion},
+          currentItems: [...hex.currentItems]
+        })
+      } else {
+        spreadHexList.push({
+          id: i,
+          currentChampion: null,
+          currentItems: [...hex.currentItems]
+        })
+      }
+    })
+
+    this.setState({championArray: newChampionArray})
+    this.setState({notesList: [...desiredComp.notesList]})
+    this.setState({synergyList: [...desiredComp.synergyList]})
+    this.setState({synergyCount: {...desiredComp.synergyCount}})
+    this.setState({hexList: spreadHexList})
   }
 
 
@@ -113,11 +141,12 @@ class App extends React.Component {
     let newHexList = []
     let freshChampionArray = this.state.championArray
 
-    for (let i = 0; i < 29; i++) {
+    for (let i = 0; i < 28; i++) {
       newHexList.push({
         id: i,
         currentChampion: null,
-        currentItems: []
+        currentItems: [],
+        draggedOver: false,
       })
     }
 
@@ -125,15 +154,11 @@ class App extends React.Component {
       champion.draggable = 'yes'
     })
 
-    this.setState({championArray: freshChampionArray}) 
+    this.setState({championArray: freshChampionArray})
     this.setState({synergyList: []})
     this.setState({synergyCount: {}})
     this.setState({hexList: newHexList})
     this.setState({notesList: []})
-  }
-
-  handleDragOver = (e) => {
-    e.preventDefault()
   }
 
 
@@ -150,6 +175,27 @@ class App extends React.Component {
       hex.currentItems = []
     })
     this.setState({hexList: newHexList})
+  }
+
+
+  handleDragOver = (e) => {
+    e.preventDefault()
+    const newHexList = this.state.hexList
+    if (newHexList[e.target.id]) {
+      if (!newHexList[e.target.id].draggedOver) {
+        newHexList[e.target.id].draggedOver = true
+        this.setState({hexList: newHexList})
+      }
+    }
+  }
+
+
+  handleDragLeave = (e) => {
+    const newHexList = this.state.hexList
+    if (newHexList[e.target.id].draggedOver) {
+      newHexList[e.target.id].draggedOver = false
+      this.setState({hexList: newHexList})
+    }
   }
 
 
@@ -224,17 +270,17 @@ class App extends React.Component {
 
   handleDropOnHex = (e) => {
     //champion list data
-    const newSynergyCount = this.state.synergyCount
-    const newSynergyList = this.state.synergyList
-    const newChampionArray = this.state.championArray
-    const newHexList = this.state.hexList
+    const newSynergyCount = {...this.state.synergyCount}
+    const newSynergyList = [...this.state.synergyList]
+    const newChampionArray = [...this.state.championArray]
+    const newHexList = [...this.state.hexList]
     const championNameFromChampionList = e.dataTransfer.getData('championName')
     const championToAddFromChampionList = newChampionArray.filter(champion => {
       return champion.name === championNameFromChampionList
     })
     const indexOfChampion = (championToFind) =>
       newChampionArray.findIndex(champion => {
-      return championToFind === champion
+      return championToFind.name === champion.name
     })
     //item list data
     const itemNameFromItemList = e.dataTransfer.getData('itemName')
@@ -244,7 +290,8 @@ class App extends React.Component {
     
     //adding items
     if (this.state.areWeMovingItem) {
-      if (newHexList[e.target.id].currentItems.length < 3 && this.state.hexList[e.target.id].currentChampion) {
+      newHexList[e.target.id].draggedOver = false
+      if (newHexList[e.target.id].currentItems.length < 3 && newHexList[e.target.id].currentChampion) {
         newHexList[e.target.id].currentItems.push(itemToAddFromItemList[0])
         this.setState({hexList: newHexList})
       }
@@ -264,7 +311,6 @@ class App extends React.Component {
 
         //when replacing a champ on an active hex with a champ from the list
         if (newHexList[e.target.id].currentChampion) {
-          console.log(newHexList[e.target.id])
           newHexList[e.target.id].currentChampion.draggable = 'yes'
           newChampionArray[indexOfChampion(newHexList[e.target.id].currentChampion)] = newHexList[e.target.id].currentChampion
           this.setState({championArray: newChampionArray})
@@ -283,6 +329,7 @@ class App extends React.Component {
             this.setState({synergyList: newSynergyList})
             this.setState({synergyCount: newSynergyCount})
           }
+          newHexList[e.target.id].currentItems = []
         }
   
         championToAddFromChampionList[0].draggable = 'no'
@@ -290,6 +337,7 @@ class App extends React.Component {
         this.setState({championArray: newChampionArray})
     
         newHexList[e.target.id].currentChampion = championToAddFromChampionList[0]
+        newHexList[e.target.id].draggedOver = false
         this.setState({hexList: newHexList})
         
       } else if (this.state.indexOfHexWithMovingChampion) {
@@ -387,11 +435,12 @@ class App extends React.Component {
               {
                 hexGridLoopArray.map((index) => {
                   return (
-                    <div className="hexagon"
+                    <div className={`hexagon ${this.state.hexList[index].draggedOver ? 'dragged-over' : ''}`} 
                     onDragOver={this.handleDragOver}
+                    onDragLeave={this.handleDragLeave}
                     onDrop={this.handleDropOnHex}
                     onDragStart={
-                      this.state.hexList[index].currentChampion 
+                      this.state.hexList[index].currentChampion
                       ? 
                       this.handleDragFromHexWithChampion 
                       :
@@ -411,7 +460,7 @@ class App extends React.Component {
                     draggable
                     key={index}
                     >
-                      <div 
+                      <div
                       className='hex-item-icon'
                       id={index}
                       style={
@@ -419,6 +468,7 @@ class App extends React.Component {
                         ?
                         {
                           backgroundImage: `url(${this.state.hexList[index].currentItems[0].imgSrc})`,
+                          border: '0.5px solid black'
                         }
                         :
                         {}
@@ -432,6 +482,7 @@ class App extends React.Component {
                         ?
                         {
                           backgroundImage: `url(${this.state.hexList[index].currentItems[1].imgSrc})`,
+                          border: '0.5px solid black'
                         }
                         :
                         {}
@@ -445,6 +496,7 @@ class App extends React.Component {
                         ?
                         {
                           backgroundImage: `url(${this.state.hexList[index].currentItems[2].imgSrc})`,
+                          border: '0.5px solid black'
                         }
                         :
                         {}
@@ -461,8 +513,9 @@ class App extends React.Component {
             {
                 hexGridLoopArray.map((index) => {
                   return (
-                    <div className="hexagon"
+                    <div className={`hexagon ${this.state.hexList[index + 7].draggedOver ? 'dragged-over' : ''}`}
                     onDragOver={this.handleDragOver}
+                    onDragLeave={this.handleDragLeave}
                     onDrop={this.handleDropOnHex}
                     onDragStart={
                       this.state.hexList[index + 7].currentChampion 
@@ -493,6 +546,7 @@ class App extends React.Component {
                         ?
                         {
                           backgroundImage: `url(${this.state.hexList[index + 7].currentItems[0].imgSrc})`,
+                          border: '0.5px solid black'
                         }
                         :
                         {}
@@ -506,6 +560,7 @@ class App extends React.Component {
                         ?
                         {
                           backgroundImage: `url(${this.state.hexList[index + 7].currentItems[1].imgSrc})`,
+                          border: '0.5px solid black'
                         }
                         :
                         {}
@@ -519,6 +574,7 @@ class App extends React.Component {
                         ?
                         {
                           backgroundImage: `url(${this.state.hexList[index + 7].currentItems[2].imgSrc})`,
+                          border: '0.5px solid black'
                         }
                         :
                         {}
@@ -535,8 +591,9 @@ class App extends React.Component {
             {
                 hexGridLoopArray.map((index) => {
                   return (
-                    <div className="hexagon"
+                    <div className={`hexagon ${this.state.hexList[index + 14].draggedOver ? 'dragged-over' : ''}`}
                     onDragOver={this.handleDragOver}
+                    onDragLeave={this.handleDragLeave}
                     onDrop={this.handleDropOnHex}
                     onDragStart={
                       this.state.hexList[index + 14].currentChampion 
@@ -567,6 +624,7 @@ class App extends React.Component {
                         ?
                         {
                           backgroundImage: `url(${this.state.hexList[index + 14].currentItems[0].imgSrc})`,
+                          border: '0.5px solid black'
                         }
                         :
                         {}
@@ -580,6 +638,7 @@ class App extends React.Component {
                         ?
                         {
                           backgroundImage: `url(${this.state.hexList[index + 14].currentItems[1].imgSrc})`,
+                          border: '0.5px solid black'
                         }
                         :
                         {}
@@ -593,6 +652,7 @@ class App extends React.Component {
                         ?
                         {
                           backgroundImage: `url(${this.state.hexList[index + 14].currentItems[2].imgSrc})`,
+                          border: '0.5px solid black'
                         }
                         :
                         {}
@@ -609,8 +669,9 @@ class App extends React.Component {
             {
                 hexGridLoopArray.map((index) => {
                   return (
-                    <div className="hexagon"
+                    <div className={`hexagon ${this.state.hexList[index + 21].draggedOver ? 'dragged-over' : ''}`}
                     onDragOver={this.handleDragOver}
+                    onDragLeave={this.handleDragLeave}
                     onDrop={this.handleDropOnHex}
                     onDragStart={
                       this.state.hexList[index + 21].currentChampion 
@@ -641,6 +702,7 @@ class App extends React.Component {
                         ?
                         {
                           backgroundImage: `url(${this.state.hexList[index + 21].currentItems[0].imgSrc})`,
+                          border: '0.5px solid black'
                         }
                         :
                         {}
@@ -654,6 +716,7 @@ class App extends React.Component {
                         ?
                         {
                           backgroundImage: `url(${this.state.hexList[index + 21].currentItems[1].imgSrc})`,
+                          border: '0.5px solid black'
                         }
                         :
                         {}
@@ -667,6 +730,7 @@ class App extends React.Component {
                         ?
                         {
                           backgroundImage: `url(${this.state.hexList[index + 21].currentItems[2].imgSrc})`,
+                          border: '0.5px solid black'
                         }
                         :
                         {}
@@ -891,7 +955,7 @@ class App extends React.Component {
                 >
                   {filteredChampionArray.map(champion => {
                     return (
-                      <div className='champion-list-box' key={champion.name}>
+                      <div className={`champion-list-box ${champion.draggable === 'no' ? '' : 'draggable-item'}`} key={champion.name}>
                         <img 
                         className={`champion-list-box-image ${champion.cost} ${champion.draggable === 'no' ? 'opaque' : ''}`} src={champion.imgSrc}
                         alt=''

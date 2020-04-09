@@ -51,6 +51,10 @@
   background-color: deepskyblue;
 }
 
+.hexagon.dragged-over {
+  background-color: deepskyblue;
+}
+
 .hexagon {
   position: relative;
   width: 75px; 
@@ -141,6 +145,7 @@
   -ms-overflow-style: none;
   padding: 10px;
   box-sizing: border-box;
+  background-color: rgba(43, 43, 43, 1);
 }
 
 .tab-container {
@@ -148,7 +153,7 @@
   margin: -10px 0 10px 0;
   position: fixed;
   height: 55px;
-  background-color: rgb(43, 43, 43);
+  background-color: rgba(43, 43, 43);
   display: flex;
   align-items: center;
   z-index: 2;
@@ -200,10 +205,19 @@
   height: auto;
 }
 
+.champion-list-box.draggable-item:hover .champion-list-box-tag {
+  text-decoration: underline;
+}
+
+.champion-list-box.draggable-item:hover .champion-list-box-image {
+  transform: scale(1.05);
+}
+
 .champion-list-box-image {
   width: 100%;
   height: auto;
   box-sizing: border-box;
+  transition: 0.1s ease-in;
 }
 
 .champion-list-box-image.one {
@@ -250,11 +264,20 @@
   height: auto;
 }
 
+.item-list-box:hover .item-list-box-image {
+  transform: scale(1.05);
+}
+
+.item-list-box:hover .item-list-box-tag {
+  text-decoration: underline;
+}
+
 .item-list-box-image {
   width: 100%;
   height: auto;
   box-sizing: border-box;
   border: 2.5px solid lightgrey;
+  transition: 0.1s ease-in
 }
 
 .item-list-box-tag {

@@ -51,10 +51,6 @@
   margin-left: 40px;
 }
 
-.hexagon:hover {
-  background-color: deepskyblue;
-}
-
 .hexagon.dragged-over {
   background-color: deepskyblue;
 }
@@ -330,6 +326,11 @@
   padding: 5px;
   margin: 0 10px 10px 0;
   width: 160px;
+}
+
+.team-info-synergy-name:hover {
+  cursor: pointer;
+  text-decoration: underline;
 }
 
 .team-info-synergy-name.bronze {

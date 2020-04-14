@@ -10,8 +10,8 @@
   height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: evenly;
-  padding: 25px;
+  justify-content: space-evenly;
+  padding: 20px 0 0 15px;
   box-sizing: border-box;
 }
 
@@ -52,7 +52,8 @@
 }
 
 .hexagon.dragged-over {
-  background-color: deepskyblue;
+  background-image: url('./assets/background-colors/00BFFF (1).jpg');
+  background-size: auto 86.6025px;
 }
 
 .hexagon {
@@ -60,9 +61,10 @@
   width: 75px; 
   height: 43.30px;
   margin: 21.65px 0;
-  background-color: lightblue;
+  background-image: url('./assets/background-colors/B9DEED (1).jpg');
   background-size: auto 86.6025px;
   background-position: center;
+  transition: 0.13s ease-in;
 }
 
 .hexTop,
@@ -134,8 +136,10 @@
 .middle-container {
   height: 100%;
   width: 20%;
-  padding: 20px 0 0 0;
+  padding: 20px 0 0 20px;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 }
 
 .right-container {
@@ -149,7 +153,7 @@
 }
 
 .tab-container {
-  width: 28%;
+  width: 30%;
   margin: -10px 0 10px 0;
   position: fixed;
   height: 55px;
@@ -271,12 +275,12 @@
 
 .item-list {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   margin: 13px 0 0 0;
 }
 
 .item-list-box {
-  width: 90%;
+  width: 95%;
   height: auto;
 }
 
@@ -301,12 +305,17 @@
   margin: 0 0 10px 0;
   text-align: center;
   color: lightgrey;
+  font-size: 10px;
 }
 
 .team-info-container {
-  height: 100%;
+  height: 47%;
   overflow-y: scroll;
   -ms-overflow-style: none;
+  border: 1px solid rgb(110, 110, 110);
+  border-radius: 10px;
+  box-sizing: border-box;
+  margin: 0px 7px 15px 0;
 }
 
 .team-info-container::-webkit-scrollbar {
@@ -314,17 +323,17 @@
 }
 
 .team-info-header {
-  color: lightgrey;
-  font-size: 20px;
-  margin: 0 0 10px 0;
-  text-decoration: underline;
+  color: rgb(110, 110, 110);
+  font-size: 14px;
+  text-align: center;
+  margin: 50% 0 0 0;
 }
 
 .team-info-synergy-name {
   color: lightgrey;
   border-radius: 5px;
   padding: 5px;
-  margin: 0 10px 10px 0;
+  margin: 10px 10px 0 5px;
   width: 160px;
 }
 
@@ -453,4 +462,46 @@
 .comp-list-empty-message {
   color: lightgrey;
   margin: 20px 0 0 0;
+}
+
+.item-recipe-header-text {
+  color: lightgrey;
+  font-size: 14px;
+  margin: 10px 0 0 10px;
+  text-decoration: underline
+}
+
+.item-recipe-sub-text {
+  color: lightgrey;
+  margin: 0 0 0 10px;
+  font-size: 34px;
+}
+
+.item-recipe-icons {
+  height: 22px;
+  width: 22px;
+}
+
+.help-dialog-tab-container {
+  display:flex;
+}
+
+.help-dialog-tab-button {
+  width: 30%;
+  padding: 10px 0 10px 0;
+  background-color: white;
+  border: none;
+  margin: 10px 0 0 50px;
+}
+
+.help-dialog-tab-button.active {
+  border-bottom: 1px solid black;
+} 
+
+.help-dialog-tab-button:hover {
+  background-color: rgba(220, 220, 220)
+}
+
+.help-dialog-tab-button:focus {
+  outline: none;
 }

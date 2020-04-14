@@ -1,4 +1,7 @@
 //THINGS I WANT TO ADD:
+//sharing comps:
+//encode the stringified json object into a url, and when the comp is saved, create a object property that saves that encodement
+//and when the comp is brought up again, u can do it via taking the url and decoding it back into an object and display that.
 //add information divs on hover for items and champions
 
 import React from 'react';
@@ -44,6 +47,7 @@ class App extends React.Component {
       notesList: [],
       synergyList: [],
       synergyCount: {},
+      uniqueItemList: [],
       costFilter: '',
       classFilter: '',
       originFilter: '',
@@ -54,6 +58,7 @@ class App extends React.Component {
       noteBoxValue: '',
       compName: '',
       showHelpDialog: false,
+      helpDialogTab: 0,
     }
   }
 
@@ -83,6 +88,7 @@ class App extends React.Component {
         notesList: this.state.notesList,
         synergyList: this.state.synergyList,
         synergyCount: this.state.synergyCount,
+        uniqueItemList: this.state.uniqueItemList
       })
       
       localStorage.setItem('savedComps', JSON.stringify(newSavedComps))
@@ -136,6 +142,7 @@ class App extends React.Component {
     this.setState({synergyList: [...desiredComp.synergyList]})
     this.setState({synergyCount: {...desiredComp.synergyCount}})
     this.setState({hexList: spreadHexList})
+    this.setState({uniqueItemList: [...desiredComp.uniqueItemList]})
   }
 
 
@@ -183,6 +190,7 @@ class App extends React.Component {
     this.setState({synergyCount: {}})
     this.setState({hexList: newHexList})
     this.setState({notesList: []})
+    this.setState({uniqueItemList: []})
   }
 
 
@@ -199,6 +207,7 @@ class App extends React.Component {
       hex.currentItems = []
     })
     this.setState({hexList: newHexList})
+    this.setState({uniqueItemList: []})
   }
 
 
@@ -266,15 +275,27 @@ class App extends React.Component {
       newChampionArray.findIndex(champion => {
       return championToFind === champion
     })
+    const newUniqueItemList = this.state.uniqueItemList
 
     if (newHexList[this.state.indexOfHexWithMovingChampion]) {
       if (this.state.indexesOfItemMovingOffOfHex.length > 0) {
+        //THIS IS NOT WORKING
+        newUniqueItemList.splice(newUniqueItemList.findIndex(item => {
+          return item.name === newHexList[this.state.indexesOfItemMovingOffOfHex[0]].currentItems[this.state.indexesOfItemMovingOffOfHex[1]].name
+        }), 1)
+        this.setState({uniqueItemList: newUniqueItemList})
+        //THIS IS NOT WORKING
         newHexList[this.state.indexesOfItemMovingOffOfHex[0]].currentItems.splice(this.state.indexesOfItemMovingOffOfHex[1], 1)
       } else {
         newHexList[this.state.indexOfHexWithMovingChampion].currentChampion.draggable = 'yes'
         newChampionArray[indexOfChampion(newHexList[this.state.indexOfHexWithMovingChampion].currentChampion)] = newHexList[this.state.indexOfHexWithMovingChampion].currentChampion
         this.setState({championArray: newChampionArray})
-
+        newHexList[this.state.indexOfHexWithMovingChampion].currentItems.forEach(item => {
+          newUniqueItemList.splice(newUniqueItemList.findIndex(uniqueListItem => {
+            return uniqueListItem.name === item.name
+          }), 1)
+        })
+        this.setState({uniqueItemList: newUniqueItemList})
         newHexList[this.state.indexOfHexWithMovingChampion].currentItems = []
 
         if (newHexList[this.state.indexOfHexWithMovingChampion].currentChampion.traits) {
@@ -324,6 +345,13 @@ class App extends React.Component {
     const itemToAddFromItemList = this.state.itemArray.filter(item => {
       return item.name === itemNameFromItemList
     })
+    const newUniqueItemList = this.state.uniqueItemList
+    //util function
+    const arrayMove = (arr, fromIndex, toIndex) => {
+      var element = arr[fromIndex];
+      arr.splice(fromIndex, 1);
+      arr.splice(toIndex, 0, element);
+    }
     
     //moving items from one champ to another
     if (this.state.indexesOfItemMovingOffOfHex.length > 0) {
@@ -337,7 +365,8 @@ class App extends React.Component {
         newHexList[e.target.id].draggedOver = false
         if (newHexList[e.target.id].currentItems.length < 3 && newHexList[e.target.id].currentChampion) {
           newHexList[e.target.id].currentItems.push(itemToAddFromItemList[0])
-          this.setState({hexList: newHexList})
+          newUniqueItemList.push(itemToAddFromItemList[0])
+          this.setState({uniqueItemList: newUniqueItemList})
         } else if (newHexList[e.target.id].currentItems.length === 3) {
           alert('Champions can only carry up to 3 items.')
         } else if (!newHexList[e.target.id].currentChampion) {
@@ -349,6 +378,7 @@ class App extends React.Component {
           championToAddFromChampionList[0].traits.forEach(trait => {
             if (newSynergyList.includes(trait)) {
               newSynergyCount[trait] = newSynergyCount[trait] + 1
+              arrayMove(newSynergyList, newSynergyList.indexOf(trait), 0)
             } else {
               newSynergyList.push(trait)
               newSynergyCount[trait] = 1
@@ -486,14 +516,196 @@ class App extends React.Component {
       }
     })
     return (
-      
       <div className='top-level-container'>
+        <div className='middle-container'>
+          <div className='team-info-container'>
+            {
+              this.state.synergyList.length === 0 
+              ?
+              <p className='team-info-header'>Active synergies will show here</p>
+              :
+              null
+            }
+            <div>
+              {
+                this.state.synergyList.map(synergy => {
+                  let threshold, level, iconImgSrc
+                  if (synergy === 'Celestial' || synergy === 'Chrono' || synergy === 'Sorcerer') {
+                    if (synergy === 'Celestial') {
+                      iconImgSrc = celestial
+                    } else if (synergy === 'Chrono') {
+                      iconImgSrc = chrono
+                    } else {
+                      iconImgSrc = sorcerer
+                    }
+                    if (this.state.synergyCount[synergy] <= 2) {
+                      threshold = 2
+                      if (this.state.synergyCount[synergy] === 2) {
+                        level = 'bronze'
+                      }
+                    } else if (this.state.synergyCount[synergy] <= 4) {
+                      threshold = 4
+                      if (this.state.synergyCount[synergy] === 3) {
+                        level = 'bronze'
+                      } else if (this.state.synergyCount[synergy] === 4) {
+                        level = 'silver'
+                      }
+                    } else {
+                      threshold = 6
+                      if (this.state.synergyCount[synergy] === 5) {
+                        level = 'silver'
+                      } else {
+                        level = 'gold'
+                      }
+                    }
+                  } else if (synergy === 'Cybernetic' || synergy === 'Blademaster' || synergy === 'Dark Star' || synergy === 'Rebel' || synergy === 'Star Guardian' ) {
+                    if (synergy === 'Cybernetic') {
+                      iconImgSrc = cybernetic
+                    } else if (synergy === 'Blademaster') {
+                      iconImgSrc = blademaster
+                    } else if (synergy === 'Dark Star') {
+                      iconImgSrc = darkStar
+                    } else if (synergy === 'Rebel') {
+                      iconImgSrc = rebel 
+                    } else {
+                      iconImgSrc = starGuardian
+                    }
+                    if (this.state.synergyCount[synergy] <= 3) {
+                      threshold = 3
+                      if (this.state.synergyCount[synergy] === 3) {
+                        level = 'bronze'
+                      }
+                    } else {
+                      threshold = 6
+                      if (this.state.synergyCount[synergy] <= 5) {
+                        level = 'bronze'
+                      } else {
+                        level = 'gold'
+                      }
+                    }
+                  } else if (synergy === 'Blaster' || synergy === 'Brawler' || synergy === 'Infiltrator' || synergy === 'Mana Reaver' || synergy === 'Space Pirate' || synergy === 'Mystic' || synergy === 'Protector' || synergy === 'Vanguard') {
+                    if (synergy === 'Blaster') {
+                      iconImgSrc = blaster
+                    } else if (synergy === 'Brawler') {
+                      iconImgSrc = brawler
+                    } else if (synergy === 'Infiltrator') {
+                      iconImgSrc = infiltrator
+                    } else if (synergy === 'Mana Reaver') {
+                      iconImgSrc = manaReaver
+                    } else if (synergy === 'Space Pirate') {
+                      iconImgSrc = spacePirate
+                    } else if (synergy === 'Mystic') {
+                      iconImgSrc = mystic
+                    } else if (synergy === 'Protector') {
+                      iconImgSrc = protector
+                    } else {
+                      iconImgSrc = vanguard
+                    }
+                    if (this.state.synergyCount[synergy] <= 2) {
+                      threshold = 2
+                      if (this.state.synergyCount[synergy] === 2) {
+                        level = 'bronze'
+                      }
+                    } else {
+                      threshold = 4
+                      if (this.state.synergyCount[synergy] === 3) {
+                        level = 'bronze'
+                      } else {
+                        level = 'gold'
+                      }
+                    }
+                  } else if (synergy === 'Demolitionist' || synergy === 'Sniper' || synergy === 'Valkyrie') {
+                    if (synergy === 'Demolitionist') {
+                      iconImgSrc = demolitionist
+                    } else if (synergy === 'Sniper') {
+                      iconImgSrc = sniper
+                    } else {
+                      iconImgSrc = valkyrie
+                    }
+                    threshold = 2
+                    if (this.state.synergyCount[synergy] >= 2) {
+                      level = 'gold'
+                    }
+                  } else if (synergy === 'Void' || synergy === 'Mech Pilot') {
+                    if (synergy === 'Void') {
+                      iconImgSrc = void1
+                    } else {
+                      iconImgSrc = mechPilot
+                    }
+                    threshold = 3
+                    if (this.state.synergyCount[synergy] >= 3) {
+                      level = 'gold'
+                    }
+                  } else if (synergy === 'Mercenary') {
+                    iconImgSrc = mercenary
+                    threshold = 1
+                    level = 'gold'
+                  } else {
+                    iconImgSrc = starShip
+                    threshold = 1
+                    level = 'gold'
+                  }
+                  return (
+                    <div 
+                    className={`team-info-synergy-name ${level}`}
+                    id={synergy}
+                    onClick={
+                      synergy === 'celestial' ||
+                      synergy === 'Chrono' ||
+                      synergy === 'cybernetic' ||
+                      synergy === 'Dark Star' ||
+                      synergy === 'Mech Pilot' ||
+                      synergy === 'Rebel' ||
+                      synergy === 'Space Pirate' ||
+                      synergy === 'Star Guardian' ||
+                      synergy === 'Valkyrie' ||
+                      synergy === 'Void' 
+                      ? 
+                      this.setOriginFilter
+                      :
+                      this.setClassFilter
+                    }
+                    >
+                      <img className='team-info-synergy-icon' src={iconImgSrc} alt=''/> {synergy} {this.state.synergyCount[synergy]} {`/ ${threshold}`}
+                    </div>
+                  )
+                })
+              }
+            </div>
+          </div>
+          <div className='team-info-container'>
+            {
+              this.state.uniqueItemList.length === 0 
+              ?
+              <p className='team-info-header'>Item recipes will show here</p>
+              :
+              null
+            }
+            <div>
+              {
+                this.state.uniqueItemList.map(item => {
+                  return (
+                    <div>
+                      <div className='item-recipe-header-text'>
+                        {item.name}
+                      </div>
+                      <div>
+                        <div className='item-recipe-sub-text'>
+                          <img src={item.imgSrc} className='item-recipe-icons'/> = <img src={item.recipeImgSrces[0]} className='item-recipe-icons'/> + <img src={item.recipeImgSrces[1]} className='item-recipe-icons'/>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })
+              }
+            </div>
+          </div>
+        </div>
         <div className='left-container'>
           <div className='hex-grid'>
             <div className='hex-grid-row'>
               {
                 hexGridLoopArray.map((index) => {
-                  //turn all the divs into one map function, add method to ondragstart with argument of i of this map function and use that to equalize the index of item in arry for dragstart function
                   return (
                     <div className={`hexagon ${this.state.hexList[index].draggedOver ? 'dragged-over' : ''}`} 
                     onDragOver={this.handleDragOver}
@@ -734,157 +946,6 @@ class App extends React.Component {
             </ol>
           </div>
         </div>
-        <div className='middle-container'>
-          <div className='team-info-container'>
-            <p className='team-info-header'>Your Current Synergies:</p>
-            <div>
-              {
-                this.state.synergyList.map(synergy => {
-                  let threshold, level, iconImgSrc
-                  if (synergy === 'Celestial' || synergy === 'Chrono' || synergy === 'Sorcerer') {
-                    if (synergy === 'Celestial') {
-                      iconImgSrc = celestial
-                    } else if (synergy === 'Chrono') {
-                      iconImgSrc = chrono
-                    } else {
-                      iconImgSrc = sorcerer
-                    }
-                    if (this.state.synergyCount[synergy] <= 2) {
-                      threshold = 2
-                      if (this.state.synergyCount[synergy] === 2) {
-                        level = 'bronze'
-                      }
-                    } else if (this.state.synergyCount[synergy] <= 4) {
-                      threshold = 4
-                      if (this.state.synergyCount[synergy] === 3) {
-                        level = 'bronze'
-                      } else if (this.state.synergyCount[synergy] === 4) {
-                        level = 'silver'
-                      }
-                    } else {
-                      threshold = 6
-                      if (this.state.synergyCount[synergy] === 5) {
-                        level = 'silver'
-                      } else {
-                        level = 'gold'
-                      }
-                    }
-                  } else if (synergy === 'Cybernetic' || synergy === 'Blademaster' || synergy === 'Dark Star' || synergy === 'Rebel' || synergy === 'Star Guardian' ) {
-                    if (synergy === 'Cybernetic') {
-                      iconImgSrc = cybernetic
-                    } else if (synergy === 'Blademaster') {
-                      iconImgSrc = blademaster
-                    } else if (synergy === 'Dark Star') {
-                      iconImgSrc = darkStar
-                    } else if (synergy === 'Rebel') {
-                      iconImgSrc = rebel 
-                    } else {
-                      iconImgSrc = starGuardian
-                    }
-                    if (this.state.synergyCount[synergy] <= 3) {
-                      threshold = 3
-                      if (this.state.synergyCount[synergy] === 3) {
-                        level = 'bronze'
-                      }
-                    } else {
-                      threshold = 6
-                      if (this.state.synergyCount[synergy] <= 5) {
-                        level = 'bronze'
-                      } else {
-                        level = 'gold'
-                      }
-                    }
-                  } else if (synergy === 'Blaster' || synergy === 'Brawler' || synergy === 'Infiltrator' || synergy === 'Mana Reaver' || synergy === 'Space Pirate' || synergy === 'Mystic' || synergy === 'Protector' || synergy === 'Vanguard') {
-                    if (synergy === 'Blaster') {
-                      iconImgSrc = blaster
-                    } else if (synergy === 'Brawler') {
-                      iconImgSrc = brawler
-                    } else if (synergy === 'Infiltrator') {
-                      iconImgSrc = infiltrator
-                    } else if (synergy === 'Mana Reaver') {
-                      iconImgSrc = manaReaver
-                    } else if (synergy === 'Space Pirate') {
-                      iconImgSrc = spacePirate
-                    } else if (synergy === 'Mystic') {
-                      iconImgSrc = mystic
-                    } else if (synergy === 'Protector') {
-                      iconImgSrc = protector
-                    } else {
-                      iconImgSrc = vanguard
-                    }
-                    if (this.state.synergyCount[synergy] <= 2) {
-                      threshold = 2
-                      if (this.state.synergyCount[synergy] === 2) {
-                        level = 'bronze'
-                      }
-                    } else {
-                      threshold = 4
-                      if (this.state.synergyCount[synergy] === 3) {
-                        level = 'bronze'
-                      } else {
-                        level = 'gold'
-                      }
-                    }
-                  } else if (synergy === 'Demolitionist' || synergy === 'Sniper' || synergy === 'Valkyrie') {
-                    if (synergy === 'Demolitionist') {
-                      iconImgSrc = demolitionist
-                    } else if (synergy === 'Sniper') {
-                      iconImgSrc = sniper
-                    } else {
-                      iconImgSrc = valkyrie
-                    }
-                    threshold = 2
-                    if (this.state.synergyCount[synergy] >= 2) {
-                      level = 'gold'
-                    }
-                  } else if (synergy === 'Void' || synergy === 'Mech Pilot') {
-                    if (synergy === 'Void') {
-                      iconImgSrc = void1
-                    } else {
-                      iconImgSrc = mechPilot
-                    }
-                    threshold = 3
-                    if (this.state.synergyCount[synergy] >= 3) {
-                      level = 'gold'
-                    }
-                  } else if (synergy === 'Mercenary') {
-                    iconImgSrc = mercenary
-                    threshold = 1
-                    level = 'gold'
-                  } else {
-                    iconImgSrc = starShip
-                    threshold = 1
-                    level = 'gold'
-                  }
-                  return (
-                    <div 
-                    className={`team-info-synergy-name ${level}`}
-                    id={synergy}
-                    onClick={
-                      synergy === 'celestial' ||
-                      synergy === 'Chrono' ||
-                      synergy === 'cybernetic' ||
-                      synergy === 'Dark Star' ||
-                      synergy === 'Mech Pilot' ||
-                      synergy === 'Rebel' ||
-                      synergy === 'Space Pirate' ||
-                      synergy === 'Star Guardian' ||
-                      synergy === 'Valkyrie' ||
-                      synergy === 'Void' 
-                      ? 
-                      this.setOriginFilter
-                      :
-                      this.setClassFilter
-                    }
-                    >
-                      <img className='team-info-synergy-icon' src={iconImgSrc} alt=''/> {synergy} {this.state.synergyCount[synergy]} {`/ ${threshold}`}
-                    </div>
-                  )
-                })
-              }
-            </div>
-          </div>
-        </div>
         <div className='right-container'>
           <div className='tab-container'>
             <button className={`right-container-tab ${this.state.rightContainerState === 'champion' ? 'active' : 'null'}`} onClick={this.displayChampionList}>Champions</button>
@@ -896,33 +957,71 @@ class App extends React.Component {
             onClick={() => {this.setState({showHelpDialog: true})}}
             >i</button>
             <Dialog
+            //change this dialog to a standardized height
             open={this.state.showHelpDialog}
             onClose={() => {this.setState({showHelpDialog: false})}}
             >
-              <DialogTitle>
-                How to use TFTbuilder:
-              </DialogTitle>
-              <DialogContent>
-                You can add items and champions by dragging the respective image of what you want over to the
-                hex you want it in. You can also remove champions by moving them from the hex their currently
-                residing in to the list on the right.
-              </DialogContent>
-              <DialogContent>
-                Under the notes section you can look to add specific informative tid-bits about the team composition
-                you are creating, so that when you get into game you can remind yourself about what you
-                need to do to succeed.
-              </DialogContent>
-              <DialogContent>
-                Once you are done, you can go to the comps tab to save your current composition, as well as view and delete
-                other compositions you have already built. Your comps will still be here even when you leave the site,
-                so don't worry about losing them!
-              </DialogContent>
-              <DialogContent>
-                This tool can be used to consolidate all the information you find on other sites about all the
-                current meta compositions, so that you can have all the information you need during your game in one 
-                convenient spot, no matter what items or champions you're given. You can also build upon comps that you've
-                already saved! Please enjoy this tool, and I hope you find great use with it!
-              </DialogContent>
+              <div className='help-dialog-tab-container'>
+                <button 
+                onClick={() => {this.setState({helpDialogTab: 0})}}
+                className={`help-dialog-tab-button ${this.state.helpDialogTab === 0 ? 'active' : null}`}>
+                  Instructions
+                </button>
+                <button 
+                onClick={() => {this.setState({helpDialogTab: 1})}}
+                className={`help-dialog-tab-button ${this.state.helpDialogTab === 1 ? 'active' : null}`}>
+                  Latest Release Notes
+                </button>
+              </div>
+              {
+                this.state.helpDialogTab === 0 
+                ?
+                <DialogContent>
+                  <DialogTitle>
+                    How to use TFTbuilder:
+                  </DialogTitle>
+                  <DialogContent>
+                    You can add items and champions by dragging the respective image of what you want over to the
+                    hex you want it in. You can also remove champions by moving them from the hex their currently
+                    residing in to the list on the right.
+                  </DialogContent>
+                  <DialogContent>
+                    Under the notes section you can look to add specific informative tid-bits about the team composition
+                    you are creating, so that when you get into game you can remind yourself about what you
+                    need to do to succeed.
+                  </DialogContent>
+                  <DialogContent>
+                    Once you are done, you can go to the comps tab to save your current composition, as well as view and delete
+                    other compositions you have already built. Your comps will still be here even when you leave the site,
+                    so don't worry about losing them!
+                  </DialogContent>
+                  <DialogContent>
+                    This tool can be used to consolidate all the information you find on other sites about all the
+                    current meta compositions, so that you can have all the information you need during your game in one 
+                    convenient spot, no matter what items or champions you're given. You can also build upon comps that you've
+                    already saved! Please enjoy this tool, and I hope you find great use with it!
+                  </DialogContent>
+                </DialogContent>
+                :
+                <DialogContent>
+                  <DialogTitle>
+                    Latest Feature Updates:
+                  </DialogTitle>
+                  <DialogContent>
+                    - You can now filter by way of clicking on your current synergies.
+                  </DialogContent>
+                  <DialogContent>
+                    - Item Recipes are here! You can see the recipe of every item on your board now.
+                  </DialogContent>
+                  <DialogContent>
+                    - You can now move items off and to and from hexes.
+                  </DialogContent>
+                  <DialogContent>
+                    Please make note that some of these changes will only be applied to new comps you create, so
+                    if you have any current comps, you will have to remake them to receive some of these changes.
+                  </DialogContent>
+                </DialogContent>
+              }
             </Dialog>
           </div>
           {

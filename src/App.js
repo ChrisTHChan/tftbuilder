@@ -64,6 +64,26 @@ class App extends React.Component {
 
   componentWillMount() {
     this.clearAll()
+    // if (JSON.parse(decodeURIComponent(document.location.pathname.split('/')[1]))[0]) {
+    //   const sharedComp = JSON.parse(decodeURIComponent(document.location.pathname.split('/')[1]))[0]
+    //   const newChampionArray = this.state.championArray
+    //   sharedComp.hexList.forEach(hex => {
+    //     if (hex.currentChampion) {
+    //       const index = newChampionArray.findIndex(champion => {
+    //         return hex.currentChampion.name === champion.name
+    //       })
+    //       newChampionArray[index].draggable = 'no'
+    //     }
+    //   })
+    //   this.setState({championArray: newChampionArray})
+    //   this.setState({notesList: [...sharedComp.notesList]})
+    //   this.setState({synergyList: [...sharedComp.synergyList]})
+    //   this.setState({synergyCount: {...sharedComp.synergyCount}})
+    //   this.setState({hexList: sharedComp.hexList})
+    //   this.setState({uniqueItemList: [...sharedComp.uniqueItemList]})
+    // } else {
+    //   document.location.replace(document.location.host)
+    // }
   }
 
 
@@ -92,6 +112,10 @@ class App extends React.Component {
       })
       
       localStorage.setItem('savedComps', JSON.stringify(newSavedComps))
+      // const encoded = encodeURIComponent(localStorage.getItem('savedComps'))
+      // const decoded = decodeURIComponent(encoded)
+      // console.log(JSON.parse(decoded))
+      // console.log(encoded)
       this.setState({savedComps: newSavedComps})
       this.setState({compName: ''})
       this.clearAll()
@@ -112,7 +136,7 @@ class App extends React.Component {
 
     this.clearAll()
 
-      desiredComp.hexList.forEach(hex => {
+    desiredComp.hexList.forEach(hex => {
       if (hex.currentChampion) {
         const index = newChampionArray.findIndex(champion => {
           return hex.currentChampion.name === champion.name

@@ -45,6 +45,7 @@ import velkoz from './assets/champions/Velkoz.png'
 import vi from './assets/champions/Vi.png'
 import wukong from './assets/champions/Wukong.png'
 import xayah from './assets/champions/Xayah.png'
+import xerath from './assets/champions/Xerath.png'
 import xinZhao from './assets/champions/XinZhao.png'
 import yasuo from './assets/champions/Yasuo.png'
 import ziggs from './assets/champions/Ziggs.png'
@@ -453,6 +454,14 @@ const championArray = [
       originIcon: celestial,
       classIcon: blademaster,
       imgSrc: xayah,
+    },
+    {
+      name: 'Xerath',
+      cost: 'five',
+      traits: ['Dark Star', 'Sorcerer'],
+      originIcon: darkStar,
+      classIcon: sorcerer,
+      imgSrc: xerath,
     },
     {
       name: 'Xin Zhao',

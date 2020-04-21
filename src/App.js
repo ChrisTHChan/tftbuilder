@@ -35,6 +35,14 @@ import valkyrie from './assets/classes/valkyrie.png'
 import vanguard from './assets/classes/vanguard.png'
 import void1 from './assets/classes/void.png'
 
+import { connect } from 'react-redux'
+import {
+  setCostFilter,
+  setOriginFilter,
+  setClassFilter,
+  clearAllFilters,
+} from './redux/actions.js'
+
 class App extends React.Component {
   documentData;
   constructor() {
@@ -48,9 +56,6 @@ class App extends React.Component {
       synergyList: [],
       synergyCount: {},
       uniqueItemList: [],
-      costFilter: '',
-      classFilter: '',
-      originFilter: '',
       areWeMovingItem: false,
       indexesOfItemMovingOffOfHex: [],
       indexOfHexWithMovingChampion: null,
@@ -90,7 +95,7 @@ class App extends React.Component {
   componentDidMount() {
     this.documentData = JSON.parse(localStorage.getItem('savedComps'))
     if (localStorage.getItem('savedComps')) {
-      this.setState({savedComps: this.documentData})
+      this.setState({ savedComps: this.documentData })
     }
   }
 
@@ -110,14 +115,14 @@ class App extends React.Component {
         synergyCount: this.state.synergyCount,
         uniqueItemList: this.state.uniqueItemList
       })
-      
+
       localStorage.setItem('savedComps', JSON.stringify(newSavedComps))
       // const encoded = encodeURIComponent(localStorage.getItem('savedComps'))
       // const decoded = decodeURIComponent(encoded)
       // console.log(JSON.parse(decoded))
       // console.log(encoded)
-      this.setState({savedComps: newSavedComps})
-      this.setState({compName: ''})
+      this.setState({ savedComps: newSavedComps })
+      this.setState({ compName: '' })
       this.clearAll()
     } else {
       alert('Please use unique names for different comps.')
@@ -149,7 +154,7 @@ class App extends React.Component {
       if (hex.currentChampion) {
         spreadHexList.push({
           id: i,
-          currentChampion: {...hex.currentChampion},
+          currentChampion: { ...hex.currentChampion },
           currentItems: [...hex.currentItems]
         })
       } else {
@@ -161,12 +166,12 @@ class App extends React.Component {
       }
     })
 
-    this.setState({championArray: newChampionArray})
-    this.setState({notesList: [...desiredComp.notesList]})
-    this.setState({synergyList: [...desiredComp.synergyList]})
-    this.setState({synergyCount: {...desiredComp.synergyCount}})
-    this.setState({hexList: spreadHexList})
-    this.setState({uniqueItemList: [...desiredComp.uniqueItemList]})
+    this.setState({ championArray: newChampionArray })
+    this.setState({ notesList: [...desiredComp.notesList] })
+    this.setState({ synergyList: [...desiredComp.synergyList] })
+    this.setState({ synergyCount: { ...desiredComp.synergyCount } })
+    this.setState({ hexList: spreadHexList })
+    this.setState({ uniqueItemList: [...desiredComp.uniqueItemList] })
   }
 
 
@@ -176,15 +181,15 @@ class App extends React.Component {
       return comp.compName === e.target.id
     })
     this.documentData = JSON.parse(localStorage.getItem('savedComps'))
-    
-    const deleteCheck = window.confirm('Do you really want to delete this comp?') 
+
+    const deleteCheck = window.confirm('Do you really want to delete this comp?')
 
     if (deleteCheck) {
       newSavedComps.splice(indexOfDesiredComp, 1)
       if (localStorage.getItem('savedComps')) {
         localStorage.setItem('savedComps', JSON.stringify(newSavedComps))
       }
-      this.setState({savedComps: newSavedComps})
+      this.setState({ savedComps: newSavedComps })
       this.clearAll()
     } else {
       return
@@ -209,19 +214,12 @@ class App extends React.Component {
       champion.draggable = 'yes'
     })
 
-    this.setState({championArray: freshChampionArray})
-    this.setState({synergyList: []})
-    this.setState({synergyCount: {}})
-    this.setState({hexList: newHexList})
-    this.setState({notesList: []})
-    this.setState({uniqueItemList: []})
-  }
-
-
-  clearFilters = () => {
-    this.setState({costFilter: ''})
-    this.setState({classFilter: ''})
-    this.setState({originFilter: ''})
+    this.setState({ championArray: freshChampionArray })
+    this.setState({ synergyList: [] })
+    this.setState({ synergyCount: {} })
+    this.setState({ hexList: newHexList })
+    this.setState({ notesList: [] })
+    this.setState({ uniqueItemList: [] })
   }
 
 
@@ -230,8 +228,8 @@ class App extends React.Component {
     newHexList.forEach(hex => {
       hex.currentItems = []
     })
-    this.setState({hexList: newHexList})
-    this.setState({uniqueItemList: []})
+    this.setState({ hexList: newHexList })
+    this.setState({ uniqueItemList: [] })
   }
 
 
@@ -241,7 +239,7 @@ class App extends React.Component {
     if (newHexList[e.target.id]) {
       if (!newHexList[e.target.id].draggedOver) {
         newHexList[e.target.id].draggedOver = true
-        this.setState({hexList: newHexList})
+        this.setState({ hexList: newHexList })
       }
     }
   }
@@ -251,7 +249,7 @@ class App extends React.Component {
     const newHexList = this.state.hexList
     if (newHexList[e.target.id].draggedOver) {
       newHexList[e.target.id].draggedOver = false
-      this.setState({hexList: newHexList})
+      this.setState({ hexList: newHexList })
     }
   }
 
@@ -262,12 +260,12 @@ class App extends React.Component {
 
 
   endDragFromHexWithChampion = () => {
-    this.setState({indexOfHexWithMovingChampion: null})
+    this.setState({ indexOfHexWithMovingChampion: null })
   }
 
-  
+
   endDragFromItemList = () => {
-    this.setState({areWeMovingItem: null})
+    this.setState({ areWeMovingItem: null })
   }
 
 
@@ -275,18 +273,18 @@ class App extends React.Component {
     const indexesOfItemMovingOffOfHex = this.state.indexesOfItemMovingOffOfHex
     indexesOfItemMovingOffOfHex.push(e.target.id)
     indexesOfItemMovingOffOfHex.push(i)
-    this.setState({indexesOfItemMovingOffOfHex: indexesOfItemMovingOffOfHex})
+    this.setState({ indexesOfItemMovingOffOfHex: indexesOfItemMovingOffOfHex })
   }
 
 
   handleDragFromHexWithChampion = (e) => {
-    this.setState({indexOfHexWithMovingChampion: e.target.id})
+    this.setState({ indexOfHexWithMovingChampion: e.target.id })
   }
 
 
   handleDragFromItemList = (e, itemName) => {
     e.dataTransfer.setData('itemName', itemName)
-    this.setState({areWeMovingItem: true})
+    this.setState({ areWeMovingItem: true })
   }
 
 
@@ -295,38 +293,36 @@ class App extends React.Component {
     const newChampionArray = this.state.championArray
     const newSynergyCount = this.state.synergyCount
     const newSynergyList = this.state.synergyList
-    const indexOfChampion = (championToFind) => 
+    const indexOfChampion = (championToFind) =>
       newChampionArray.findIndex(champion => {
-      return championToFind === champion
-    })
+        return championToFind === champion
+      })
     const newUniqueItemList = this.state.uniqueItemList
 
     if (newHexList[this.state.indexOfHexWithMovingChampion]) {
       if (this.state.indexesOfItemMovingOffOfHex.length > 0) {
-        //THIS IS NOT WORKING
         newUniqueItemList.splice(newUniqueItemList.findIndex(item => {
           return item.name === newHexList[this.state.indexesOfItemMovingOffOfHex[0]].currentItems[this.state.indexesOfItemMovingOffOfHex[1]].name
         }), 1)
-        this.setState({uniqueItemList: newUniqueItemList})
-        //THIS IS NOT WORKING
+        this.setState({ uniqueItemList: newUniqueItemList })
         newHexList[this.state.indexesOfItemMovingOffOfHex[0]].currentItems.splice(this.state.indexesOfItemMovingOffOfHex[1], 1)
       } else {
         newHexList[this.state.indexOfHexWithMovingChampion].currentChampion.draggable = 'yes'
         newChampionArray[indexOfChampion(newHexList[this.state.indexOfHexWithMovingChampion].currentChampion)] = newHexList[this.state.indexOfHexWithMovingChampion].currentChampion
-        this.setState({championArray: newChampionArray})
+        this.setState({ championArray: newChampionArray })
         newHexList[this.state.indexOfHexWithMovingChampion].currentItems.forEach(item => {
           newUniqueItemList.splice(newUniqueItemList.findIndex(uniqueListItem => {
             return uniqueListItem.name === item.name
           }), 1)
         })
-        this.setState({uniqueItemList: newUniqueItemList})
+        this.setState({ uniqueItemList: newUniqueItemList })
         newHexList[this.state.indexOfHexWithMovingChampion].currentItems = []
 
         if (newHexList[this.state.indexOfHexWithMovingChampion].currentChampion.traits) {
           newHexList[this.state.indexOfHexWithMovingChampion].currentChampion.traits.forEach(trait => {
             const indexOfTrait = newSynergyList.indexOf(trait)
             if (newSynergyList.includes(trait)) {
-              newSynergyCount[trait] = newSynergyCount[trait] -1
+              newSynergyCount[trait] = newSynergyCount[trait] - 1
               if (newSynergyCount[trait] === 0) {
                 if (indexOfTrait > -1) {
                   newSynergyList.splice(indexOfTrait, 1)
@@ -334,8 +330,8 @@ class App extends React.Component {
               }
             }
           })
-          this.setState({synergyList: newSynergyList})
-          this.setState({synergyCount: newSynergyCount})
+          this.setState({ synergyList: newSynergyList })
+          this.setState({ synergyCount: newSynergyCount })
         }
         newHexList[this.state.indexOfHexWithMovingChampion].currentChampion = null
       }
@@ -343,16 +339,16 @@ class App extends React.Component {
       return
     }
 
-    this.setState({hexList: newHexList})
+    this.setState({ hexList: newHexList })
 
-    this.setState({indexOfHexWithMovingChampion: null})
-    this.setState({indexesOfItemMovingOffOfHex: []})
+    this.setState({ indexOfHexWithMovingChampion: null })
+    this.setState({ indexesOfItemMovingOffOfHex: [] })
   }
 
 
   handleDropOnHex = (e) => {
     //champion list data
-    const newSynergyCount = {...this.state.synergyCount}
+    const newSynergyCount = { ...this.state.synergyCount }
     const newSynergyList = [...this.state.synergyList]
     const newChampionArray = [...this.state.championArray]
     const newHexList = [...this.state.hexList]
@@ -362,8 +358,8 @@ class App extends React.Component {
     })
     const indexOfChampion = (championToFind) =>
       newChampionArray.findIndex(champion => {
-      return championToFind.name === champion.name
-    })
+        return championToFind.name === champion.name
+      })
     //item list data
     const itemNameFromItemList = e.dataTransfer.getData('itemName')
     const itemToAddFromItemList = this.state.itemArray.filter(item => {
@@ -376,7 +372,7 @@ class App extends React.Component {
       arr.splice(fromIndex, 1);
       arr.splice(toIndex, 0, element);
     }
-    
+
     //moving items from one champ to another
     if (this.state.indexesOfItemMovingOffOfHex.length > 0) {
       if (newHexList[e.target.id].currentItems.length < 3 && newHexList[e.target.id].currentChampion) {
@@ -390,7 +386,7 @@ class App extends React.Component {
         if (newHexList[e.target.id].currentItems.length < 3 && newHexList[e.target.id].currentChampion) {
           newHexList[e.target.id].currentItems.push(itemToAddFromItemList[0])
           newUniqueItemList.push(itemToAddFromItemList[0])
-          this.setState({uniqueItemList: newUniqueItemList})
+          this.setState({ uniqueItemList: newUniqueItemList })
         } else if (newHexList[e.target.id].currentItems.length === 3) {
           alert('Champions can only carry up to 3 items.')
         } else if (!newHexList[e.target.id].currentChampion) {
@@ -408,19 +404,19 @@ class App extends React.Component {
               newSynergyCount[trait] = 1
             }
           });
-          this.setState({synergyList: newSynergyList})
-          this.setState({synergyCount: newSynergyCount})
+          this.setState({ synergyList: newSynergyList })
+          this.setState({ synergyCount: newSynergyCount })
 
           //when replacing a champ on an active hex with a champ from the list
           if (newHexList[e.target.id].currentChampion) {
             newHexList[e.target.id].currentChampion.draggable = 'yes'
             newChampionArray[indexOfChampion(newHexList[e.target.id].currentChampion)] = newHexList[e.target.id].currentChampion
-            this.setState({championArray: newChampionArray})
+            this.setState({ championArray: newChampionArray })
             if (newHexList[e.target.id].currentChampion.traits) {
               newHexList[e.target.id].currentChampion.traits.forEach(trait => {
                 const indexOfTrait = newSynergyList.indexOf(trait)
                 if (newSynergyList.includes(trait)) {
-                  newSynergyCount[trait] = newSynergyCount[trait] -1
+                  newSynergyCount[trait] = newSynergyCount[trait] - 1
                   if (newSynergyCount[trait] === 0) {
                     if (indexOfTrait > -1) {
                       newSynergyList.splice(indexOfTrait, 1)
@@ -428,20 +424,20 @@ class App extends React.Component {
                   }
                 }
               })
-              this.setState({synergyList: newSynergyList})
-              this.setState({synergyCount: newSynergyCount})
+              this.setState({ synergyList: newSynergyList })
+              this.setState({ synergyCount: newSynergyCount })
             }
             newHexList[e.target.id].currentItems = []
           }
-    
+
           championToAddFromChampionList[0].draggable = 'no'
           newChampionArray[indexOfChampion(championToAddFromChampionList[0])] = championToAddFromChampionList[0]
-          this.setState({championArray: newChampionArray})
-      
+          this.setState({ championArray: newChampionArray })
+
           newHexList[e.target.id].currentChampion = championToAddFromChampionList[0]
           newHexList[e.target.id].draggedOver = false
-          this.setState({hexList: newHexList})
-          
+          this.setState({ hexList: newHexList })
+
         } else if (this.state.indexOfHexWithMovingChampion) {
           //dragging from an active hex
           const championToMoveFromHex = newHexList[this.state.indexOfHexWithMovingChampion].currentChampion
@@ -452,91 +448,68 @@ class App extends React.Component {
           //exchange items
           newHexList[this.state.indexOfHexWithMovingChampion].currentItems = newHexList[e.target.id].currentItems
           newHexList[e.target.id].currentItems = itemsToMoveFromHex
-          this.setState({hexList: newHexList})
+          this.setState({ hexList: newHexList })
         }
       }
     }
 
-    this.setState({indexOfHexWithMovingChampion: null})
-    this.setState({areWeMovingItem: false})
-    this.setState({indexesOfItemMovingOffOfHex: []})
-  }
-
-
-  setCostFilter = (e) => {
-    this.setState({costFilter: e.target.value})
-  }
-
-
-  setOriginFilter = (e) => {
-    if (e.target.id) {
-      this.setState({originFilter: e.target.id})
-    } else {
-      this.setState({originFilter: e.target.value})
-    }
-  }
-
-
-  setClassFilter = (e) => {
-    if (e.target.id) {
-      this.setState({classFilter: e.target.id})
-    } else {
-      this.setState({classFilter: e.target.value})
-    }
+    this.setState({ indexOfHexWithMovingChampion: null })
+    this.setState({ areWeMovingItem: false })
+    this.setState({ indexesOfItemMovingOffOfHex: [] })
   }
 
 
   handleNoteBoxChange = (e) => {
-    this.setState({noteBoxValue: e.target.value})
+    this.setState({ noteBoxValue: e.target.value })
   }
 
   appendNote = () => {
     let newNotesList = this.state.notesList
     if (this.state.noteBoxValue) {
       newNotesList.push(this.state.noteBoxValue)
-      this.setState({noteBoxValue: ''})
-      this.setState({notesList: newNotesList})
+      this.setState({ noteBoxValue: '' })
+      this.setState({ notesList: newNotesList })
     }
   }
-  
+
 
   displayChampionList = () => {
-    this.setState({rightContainerState: 'champion'})
+    this.setState({ rightContainerState: 'champion' })
   }
 
 
   displayItemsList = () => {
-    this.setState({rightContainerState: 'item'})
+    this.setState({ rightContainerState: 'item' })
   }
 
   displayNotes = () => {
-    this.setState({rightContainerState: 'notes'})
+    this.setState({ rightContainerState: 'notes' })
   }
 
   displayComps = () => {
-    this.setState({rightContainerState: 'comps'})
+    this.setState({ rightContainerState: 'comps' })
   }
 
   render() {
     const hexGridLoopArray = [0, 1, 2, 3, 4, 5, 6]
     let filteredChampionArray = this.state.championArray
     filteredChampionArray = filteredChampionArray.filter((champion) => {
-      if (this.state.costFilter === '' && this.state.originFilter === '' && this.state.classFilter === '') {
+      if (this.props.costFilter === '' && this.props.originFilter === '' && this.props.classFilter === '') {
         return this.state.championArray
-      } else if (this.state.costFilter !== '' && this.state.originFilter === '' && this.state.classFilter === '') {
-        return champion.cost === this.state.costFilter
-      } else if (this.state.costFilter === '' && this.state.originFilter !== '' && this.state.classFilter === '') {
-        return champion.traits[0] === this.state.originFilter
-      } else if (this.state.costFilter === '' && this.state.originFilter === '' && this.state.classFilter !== '') {
-        return champion.traits[1] === this.state.classFilter || champion.traits[2] === this.state.classFilter
-      } else if (this.state.costFilter !== '' && this.state.originFilter !== '' && this.state.classFilter === '') {
-        return champion.cost === this.state.costFilter && champion.traits[0] === this.state.originFilter 
-      } else if (this.state.costFilter !== '' && this.state.originFilter === '' && this.state.classFilter !== '') {
-        return champion.cost === this.state.costFilter && (this.state.classFilter === champion.traits[1] || this.state.classFilter === champion.traits[2])
-      } else if (this.state.costFilter === '' && this.state.originFilter !== '' && this.state.classFilter !== '') {
-        return champion.traits[0] === this.state.originFilter && (this.state.classFilter === champion.traits[1] || this.state.classFilter === champion.traits[2])
+      } else if (this.props.costFilter !== '' && this.props.originFilter === '' && this.props.classFilter === '') {
+        return champion.cost === this.props.costFilter
+      } else if (this.props.costFilter === '' && this.props.originFilter !== '' && this.props.classFilter === '') {
+        return champion.traits[0] === this.props.originFilter
+      } else if (this.props.costFilter === '' && this.props.originFilter === '' && this.props.classFilter !== '') {
+        return champion.traits[1] === this.props.classFilter || champion.traits[2] === this.props.classFilter
+      } else if (this.props.costFilter !== '' && this.props.originFilter !== '' && this.props.classFilter === '') {
+        return champion.cost === this.props.costFilter && champion.traits[0] === this.props.originFilter
+      } else if (this.props.costFilter !== '' && this.props.originFilter === '' && this.props.classFilter !== '') {
+        return champion.cost === this.props.costFilter && (this.props.classFilter === champion.traits[1] || this.props.classFilter === champion.traits[2])
+      } else if (this.props.costFilter === '' && this.props.originFilter !== '' && this.props.classFilter !== '') {
+        return champion.traits[0] === this.props.originFilter && (this.props.classFilter === champion.traits[1] || this.props.classFilter === champion.traits[2])
       } else {
-        return champion.cost === this.state.costFilter && champion.traits[0] === this.state.originFilter && (this.state.classFilter === champion.traits[1] || this.state.classFilter === champion.traits[2])
+        return champion.cost === this.props.costFilter && champion.traits[0] === this.props.originFilter && (this.props.classFilter === champion.traits[1] || this.props.classFilter === champion.traits[2])
       }
     })
     return (
@@ -544,11 +517,11 @@ class App extends React.Component {
         <div className='middle-container'>
           <div className='team-info-container'>
             {
-              this.state.synergyList.length === 0 
-              ?
-              <p className='team-info-header'>Active synergies will show here</p>
-              :
-              null
+              this.state.synergyList.length === 0
+                ?
+                <p className='team-info-header'>Active synergies will show here</p>
+                :
+                null
             }
             <div>
               {
@@ -582,7 +555,7 @@ class App extends React.Component {
                         level = 'gold'
                       }
                     }
-                  } else if (synergy === 'Cybernetic' || synergy === 'Blademaster' || synergy === 'Dark Star' || synergy === 'Rebel' || synergy === 'Star Guardian' ) {
+                  } else if (synergy === 'Cybernetic' || synergy === 'Blademaster' || synergy === 'Dark Star' || synergy === 'Rebel' || synergy === 'Star Guardian') {
                     if (synergy === 'Cybernetic') {
                       iconImgSrc = cybernetic
                     } else if (synergy === 'Blademaster') {
@@ -590,7 +563,7 @@ class App extends React.Component {
                     } else if (synergy === 'Dark Star') {
                       iconImgSrc = darkStar
                     } else if (synergy === 'Rebel') {
-                      iconImgSrc = rebel 
+                      iconImgSrc = rebel
                     } else {
                       iconImgSrc = starGuardian
                     }
@@ -670,27 +643,27 @@ class App extends React.Component {
                     level = 'gold'
                   }
                   return (
-                    <div 
-                    className={`team-info-synergy-name ${level}`}
-                    id={synergy}
-                    onClick={
-                      synergy === 'celestial' ||
-                      synergy === 'Chrono' ||
-                      synergy === 'cybernetic' ||
-                      synergy === 'Dark Star' ||
-                      synergy === 'Mech Pilot' ||
-                      synergy === 'Rebel' ||
-                      synergy === 'Space Pirate' ||
-                      synergy === 'Star Guardian' ||
-                      synergy === 'Valkyrie' ||
-                      synergy === 'Void' 
-                      ? 
-                      this.setOriginFilter
-                      :
-                      this.setClassFilter
-                    }
+                    <div
+                      className={`team-info-synergy-name ${level}`}
+                      id={synergy}
+                      onClick={
+                        synergy === 'celestial' ||
+                          synergy === 'Chrono' ||
+                          synergy === 'cybernetic' ||
+                          synergy === 'Dark Star' ||
+                          synergy === 'Mech Pilot' ||
+                          synergy === 'Rebel' ||
+                          synergy === 'Space Pirate' ||
+                          synergy === 'Star Guardian' ||
+                          synergy === 'Valkyrie' ||
+                          synergy === 'Void'
+                          ?
+                          this.props.setOriginFilter
+                          :
+                          this.props.setClassFilter
+                      }
                     >
-                      <img className='team-info-synergy-icon' src={iconImgSrc} alt=''/> {synergy} {this.state.synergyCount[synergy]} {`/ ${threshold}`}
+                      <img className='team-info-synergy-icon' src={iconImgSrc} alt='' /> {synergy} {this.state.synergyCount[synergy]} {`/ ${threshold}`}
                     </div>
                   )
                 })
@@ -699,11 +672,11 @@ class App extends React.Component {
           </div>
           <div className='team-info-container'>
             {
-              this.state.uniqueItemList.length === 0 
-              ?
-              <p className='team-info-header'>Item recipes will show here</p>
-              :
-              null
+              this.state.uniqueItemList.length === 0
+                ?
+                <p className='team-info-header'>Item recipes will show here</p>
+                :
+                null
             }
             <div>
               {
@@ -715,7 +688,7 @@ class App extends React.Component {
                       </div>
                       <div>
                         <div className='item-recipe-sub-text'>
-                          <img src={item.imgSrc} className='item-recipe-icons'/> = <img src={item.recipeImgSrces[0]} className='item-recipe-icons'/> + <img src={item.recipeImgSrces[1]} className='item-recipe-icons'/>
+                          <img src={item.imgSrc} className='item-recipe-icons' /> = <img src={item.recipeImgSrces[0]} className='item-recipe-icons' /> + <img src={item.recipeImgSrces[1]} className='item-recipe-icons' />
                         </div>
                       </div>
                     </div>
@@ -731,49 +704,49 @@ class App extends React.Component {
               {
                 hexGridLoopArray.map((index) => {
                   return (
-                    <div className={`hexagon ${this.state.hexList[index].draggedOver ? 'dragged-over' : ''}`} 
-                    onDragOver={this.handleDragOver}
-                    onDragLeave={this.handleDragLeave}
-                    onDrop={this.handleDropOnHex}
-                    onDragStart={
-                      this.state.hexList[index].currentChampion
-                      ? 
-                      this.handleDragFromHexWithChampion
-                      :
-                      (e) => {e.preventDefault()}
-                    }
-                    onDragEnd={this.endDragFromHexWithChampion}
-                    id={index}
-                    style={
-                      this.state.hexList[index].currentChampion
-                      ?
-                      {
-                        backgroundImage: `url(${this.state.hexList[index].currentChampion.imgSrc})`,
+                    <div className={`hexagon ${this.state.hexList[index].draggedOver ? 'dragged-over' : ''}`}
+                      onDragOver={this.handleDragOver}
+                      onDragLeave={this.handleDragLeave}
+                      onDrop={this.handleDropOnHex}
+                      onDragStart={
+                        this.state.hexList[index].currentChampion
+                          ?
+                          this.handleDragFromHexWithChampion
+                          :
+                          (e) => { e.preventDefault() }
                       }
-                      :
-                      {}
-                    }
-                    draggable
-                    key={index}
-                    > 
+                      onDragEnd={this.endDragFromHexWithChampion}
+                      id={index}
+                      style={
+                        this.state.hexList[index].currentChampion
+                          ?
+                          {
+                            backgroundImage: `url(${this.state.hexList[index].currentChampion.imgSrc})`,
+                          }
+                          :
+                          {}
+                      }
+                      draggable
+                      key={index}
+                    >
                       {
                         this.state.hexList[index].currentItems.map((item, i) => {
                           return (
                             <div
-                            className='hex-item-icon'
-                            onDragStart={(e) => this.dragItemOffOfChampion(e, i)}
-                            id={index}
-                            style={
-                              this.state.hexList[index].currentItems[i]
-                              ?
-                              {
-                                backgroundImage: `url(${item.imgSrc})`,
-                                border: '0.5px solid black'
+                              className='hex-item-icon'
+                              onDragStart={(e) => this.dragItemOffOfChampion(e, i)}
+                              id={index}
+                              style={
+                                this.state.hexList[index].currentItems[i]
+                                  ?
+                                  {
+                                    backgroundImage: `url(${item.imgSrc})`,
+                                    border: '0.5px solid black'
+                                  }
+                                  :
+                                  {}
                               }
-                              :
-                              {}
-                            }
-                            draggable
+                              draggable
                             />
                           )
                         })
@@ -786,52 +759,52 @@ class App extends React.Component {
               }
             </div>
             <div className='hex-grid-row even'>
-            {
+              {
                 hexGridLoopArray.map((index) => {
                   return (
                     <div className={`hexagon ${this.state.hexList[index + 7].draggedOver ? 'dragged-over' : ''}`}
-                    onDragOver={this.handleDragOver}
-                    onDragLeave={this.handleDragLeave}
-                    onDrop={this.handleDropOnHex}
-                    onDragStart={
-                      this.state.hexList[index + 7].currentChampion 
-                      ? 
-                      this.handleDragFromHexWithChampion 
-                      :
-                      (e) => {e.preventDefault()}
-                    }
-                    onDragEnd={this.endDragFromHexWithChampion}
-                    id={index + 7}
-                    style={
-                      this.state.hexList[index + 7].currentChampion
-                      ?
-                      {
-                        backgroundImage: `url(${this.state.hexList[index + 7].currentChampion.imgSrc})`,
+                      onDragOver={this.handleDragOver}
+                      onDragLeave={this.handleDragLeave}
+                      onDrop={this.handleDropOnHex}
+                      onDragStart={
+                        this.state.hexList[index + 7].currentChampion
+                          ?
+                          this.handleDragFromHexWithChampion
+                          :
+                          (e) => { e.preventDefault() }
                       }
-                      :
-                      {}
-                    }
-                    draggable
-                    key={index + 7}
+                      onDragEnd={this.endDragFromHexWithChampion}
+                      id={index + 7}
+                      style={
+                        this.state.hexList[index + 7].currentChampion
+                          ?
+                          {
+                            backgroundImage: `url(${this.state.hexList[index + 7].currentChampion.imgSrc})`,
+                          }
+                          :
+                          {}
+                      }
+                      draggable
+                      key={index + 7}
                     >
                       {
                         this.state.hexList[index + 7].currentItems.map((item, i) => {
                           return (
-                            <div 
-                            onDragStart={(e) => this.dragItemOffOfChampion(e, i)}
-                            className='hex-item-icon'
-                            id={index + 7}
-                            style={
-                              this.state.hexList[index + 7].currentItems[i]
-                              ?
-                              {
-                                backgroundImage: `url(${item.imgSrc})`,
-                                border: '0.5px solid black'
+                            <div
+                              onDragStart={(e) => this.dragItemOffOfChampion(e, i)}
+                              className='hex-item-icon'
+                              id={index + 7}
+                              style={
+                                this.state.hexList[index + 7].currentItems[i]
+                                  ?
+                                  {
+                                    backgroundImage: `url(${item.imgSrc})`,
+                                    border: '0.5px solid black'
+                                  }
+                                  :
+                                  {}
                               }
-                              :
-                              {}
-                            }
-                            draggable
+                              draggable
                             />
                           )
                         })
@@ -844,57 +817,57 @@ class App extends React.Component {
               }
             </div>
             <div className='hex-grid-row'>
-            {
+              {
                 hexGridLoopArray.map((index) => {
                   return (
                     <div className={`hexagon ${this.state.hexList[index + 14].draggedOver ? 'dragged-over' : ''}`}
-                    onDragOver={this.handleDragOver}
-                    onDragLeave={this.handleDragLeave}
-                    onDrop={this.handleDropOnHex}
-                    onDragStart={
-                      this.state.hexList[index + 14].currentChampion 
-                      ? 
-                      this.handleDragFromHexWithChampion 
-                      :
-                      (e) => {e.preventDefault()}
-                    }
-                    onDragEnd={this.endDragFromHexWithChampion}
-                    id={index + 14}
-                    style={
-                      this.state.hexList[index + 14].currentChampion
-                      ?
-                      {
-                        backgroundImage: `url(${this.state.hexList[index + 14].currentChampion.imgSrc})`,
+                      onDragOver={this.handleDragOver}
+                      onDragLeave={this.handleDragLeave}
+                      onDrop={this.handleDropOnHex}
+                      onDragStart={
+                        this.state.hexList[index + 14].currentChampion
+                          ?
+                          this.handleDragFromHexWithChampion
+                          :
+                          (e) => { e.preventDefault() }
                       }
-                      :
-                      {}
-                    }
-                    draggable
-                    key={index + 14}
+                      onDragEnd={this.endDragFromHexWithChampion}
+                      id={index + 14}
+                      style={
+                        this.state.hexList[index + 14].currentChampion
+                          ?
+                          {
+                            backgroundImage: `url(${this.state.hexList[index + 14].currentChampion.imgSrc})`,
+                          }
+                          :
+                          {}
+                      }
+                      draggable
+                      key={index + 14}
                     >
                       {
                         this.state.hexList[index + 14].currentItems.map((item, i) => {
                           return (
-                            <div 
-                            onDragStart={(e) => this.dragItemOffOfChampion(e, i)}
-                            className='hex-item-icon'
-                            id={index + 14}
-                            style={
-                              this.state.hexList[index + 14].currentItems[i]
-                              ?
-                              {
-                                backgroundImage: `url(${item.imgSrc})`,
-                                border: '0.5px solid black'
+                            <div
+                              onDragStart={(e) => this.dragItemOffOfChampion(e, i)}
+                              className='hex-item-icon'
+                              id={index + 14}
+                              style={
+                                this.state.hexList[index + 14].currentItems[i]
+                                  ?
+                                  {
+                                    backgroundImage: `url(${item.imgSrc})`,
+                                    border: '0.5px solid black'
+                                  }
+                                  :
+                                  {}
                               }
-                              :
-                              {}
-                            }
-                            draggable
+                              draggable
                             />
                           )
                         })
                       }
-                      
+
                       <div className="hexTop" id={index + 14}></div>
                       <div className="hexBottom" id={index + 14}></div>
                     </div>
@@ -903,52 +876,52 @@ class App extends React.Component {
               }
             </div>
             <div className='hex-grid-row even'>
-            {
+              {
                 hexGridLoopArray.map((index) => {
                   return (
                     <div className={`hexagon ${this.state.hexList[index + 21].draggedOver ? 'dragged-over' : ''}`}
-                    onDragOver={this.handleDragOver}
-                    onDragLeave={this.handleDragLeave}
-                    onDrop={this.handleDropOnHex}
-                    onDragStart={
-                      this.state.hexList[index + 21].currentChampion 
-                      ? 
-                      this.handleDragFromHexWithChampion 
-                      :
-                      (e) => {e.preventDefault()}
-                    }
-                    onDragEnd={this.endDragFromHexWithChampion}
-                    id={index + 21}
-                    style={
-                      this.state.hexList[index + 21].currentChampion
-                      ?
-                      {
-                        backgroundImage: `url(${this.state.hexList[index + 21].currentChampion.imgSrc})`,
+                      onDragOver={this.handleDragOver}
+                      onDragLeave={this.handleDragLeave}
+                      onDrop={this.handleDropOnHex}
+                      onDragStart={
+                        this.state.hexList[index + 21].currentChampion
+                          ?
+                          this.handleDragFromHexWithChampion
+                          :
+                          (e) => { e.preventDefault() }
                       }
-                      :
-                      {}
-                    }
-                    draggable
-                    key={index + 21}
+                      onDragEnd={this.endDragFromHexWithChampion}
+                      id={index + 21}
+                      style={
+                        this.state.hexList[index + 21].currentChampion
+                          ?
+                          {
+                            backgroundImage: `url(${this.state.hexList[index + 21].currentChampion.imgSrc})`,
+                          }
+                          :
+                          {}
+                      }
+                      draggable
+                      key={index + 21}
                     >
                       {
                         this.state.hexList[index + 21].currentItems.map((item, i) => {
                           return (
-                            <div 
-                            onDragStart={(e) => this.dragItemOffOfChampion(e, i)}
-                            className='hex-item-icon'
-                            id={index + 21}
-                            style={
-                              this.state.hexList[index + 21].currentItems[i]
-                              ?
-                              {
-                                backgroundImage: `url(${item.imgSrc})`,
-                                border: '0.5px solid black'
+                            <div
+                              onDragStart={(e) => this.dragItemOffOfChampion(e, i)}
+                              className='hex-item-icon'
+                              id={index + 21}
+                              style={
+                                this.state.hexList[index + 21].currentItems[i]
+                                  ?
+                                  {
+                                    backgroundImage: `url(${item.imgSrc})`,
+                                    border: '0.5px solid black'
+                                  }
+                                  :
+                                  {}
                               }
-                              :
-                              {}
-                            }
-                            draggable
+                              draggable
                             />
                           )
                         })
@@ -976,295 +949,295 @@ class App extends React.Component {
             <button className={`right-container-tab ${this.state.rightContainerState === 'item' ? 'active' : 'null'}`} onClick={this.displayItemsList}>Items</button>
             <button className={`right-container-tab ${this.state.rightContainerState === 'notes' ? 'active' : 'null'}`} onClick={this.displayNotes}>Notes</button>
             <button className={`right-container-tab ${this.state.rightContainerState === 'comps' ? 'active' : 'null'}`} onClick={this.displayComps}>Comps</button>
-            <button 
-            className='right-container-info-tab'
-            onClick={() => {this.setState({showHelpDialog: true})}}
+            <button
+              className='right-container-info-tab'
+              onClick={() => { this.setState({ showHelpDialog: true }) }}
             >i</button>
             <Dialog
-            //change this dialog to a standardized height
-            open={this.state.showHelpDialog}
-            onClose={() => {this.setState({showHelpDialog: false})}}
+              //change this dialog to a standardized height
+              open={this.state.showHelpDialog}
+              onClose={() => { this.setState({ showHelpDialog: false }) }}
             >
               <div className='help-dialog-tab-container'>
-                <button 
-                onClick={() => {this.setState({helpDialogTab: 0})}}
-                className={`help-dialog-tab-button ${this.state.helpDialogTab === 0 ? 'active' : null}`}>
+                <button
+                  onClick={() => { this.setState({ helpDialogTab: 0 }) }}
+                  className={`help-dialog-tab-button ${this.state.helpDialogTab === 0 ? 'active' : null}`}>
                   Instructions
                 </button>
-                <button 
-                onClick={() => {this.setState({helpDialogTab: 1})}}
-                className={`help-dialog-tab-button ${this.state.helpDialogTab === 1 ? 'active' : null}`}>
+                <button
+                  onClick={() => { this.setState({ helpDialogTab: 1 }) }}
+                  className={`help-dialog-tab-button ${this.state.helpDialogTab === 1 ? 'active' : null}`}>
                   Latest Release Notes
                 </button>
               </div>
               {
-                this.state.helpDialogTab === 0 
-                ?
-                <DialogContent>
-                  <DialogTitle>
-                    How to use TFTbuilder:
+                this.state.helpDialogTab === 0
+                  ?
+                  <DialogContent>
+                    <DialogTitle>
+                      How to use TFTbuilder:
                   </DialogTitle>
-                  <DialogContent>
-                    You can add items and champions by dragging the respective image of what you want over to the
-                    hex you want it in. You can also remove champions by moving them from the hex their currently
-                    residing in to the list on the right.
+                    <DialogContent>
+                      You can add items and champions by dragging the respective image of what you want over to the
+                      hex you want it in. You can also remove champions by moving them from the hex their currently
+                      residing in to the list on the right.
                   </DialogContent>
-                  <DialogContent>
-                    Under the notes section you can look to add specific informative tid-bits about the team composition
-                    you are creating, so that when you get into game you can remind yourself about what you
-                    need to do to succeed.
+                    <DialogContent>
+                      Under the notes section you can look to add specific informative tid-bits about the team composition
+                      you are creating, so that when you get into game you can remind yourself about what you
+                      need to do to succeed.
                   </DialogContent>
-                  <DialogContent>
-                    Once you are done, you can go to the comps tab to save your current composition, as well as view and delete
-                    other compositions you have already built. Your comps will still be here even when you leave the site,
-                    so don't worry about losing them!
+                    <DialogContent>
+                      Once you are done, you can go to the comps tab to save your current composition, as well as view and delete
+                      other compositions you have already built. Your comps will still be here even when you leave the site,
+                      so don't worry about losing them!
                   </DialogContent>
-                  <DialogContent>
-                    This tool can be used to consolidate all the information you find on other sites about all the
-                    current meta compositions, so that you can have all the information you need during your game in one 
-                    convenient spot, no matter what items or champions you're given. You can also build upon comps that you've
-                    already saved! Please enjoy this tool, and I hope you find great use with it!
+                    <DialogContent>
+                      This tool can be used to consolidate all the information you find on other sites about all the
+                      current meta compositions, so that you can have all the information you need during your game in one
+                      convenient spot, no matter what items or champions you're given. You can also build upon comps that you've
+                      already saved! Please enjoy this tool, and I hope you find great use with it!
                   </DialogContent>
-                </DialogContent>
-                :
-                <DialogContent>
-                  <DialogTitle>
-                    Latest Feature Updates:
+                  </DialogContent>
+                  :
+                  <DialogContent>
+                    <DialogTitle>
+                      Latest Feature Updates:
                   </DialogTitle>
-                  <DialogContent>
-                    - You can now filter by way of clicking on your current synergies.
+                    <DialogContent>
+                      - You can now filter by way of clicking on your current synergies.
                   </DialogContent>
-                  <DialogContent>
-                    - Item Recipes are here! You can see the recipe of every item on your board now.
+                    <DialogContent>
+                      - Item Recipes are here! You can see the recipe of every item on your board now.
                   </DialogContent>
-                  <DialogContent>
-                    - You can now move items off and to and from hexes.
+                    <DialogContent>
+                      - You can now move items off and to and from hexes.
                   </DialogContent>
-                  <DialogContent>
-                    Please make note that some of these changes will only be applied to new comps you create, so
-                    if you have any current comps, you will have to remake them to receive some of these changes.
+                    <DialogContent>
+                      Please make note that some of these changes will only be applied to new comps you create, so
+                      if you have any current comps, you will have to remake them to receive some of these changes.
                   </DialogContent>
-                </DialogContent>
+                  </DialogContent>
               }
             </Dialog>
           </div>
           {
             this.state.rightContainerState === 'champion'
-            ? 
-            (
-              <div>
-                <select className='champion-list-filter first' value={this.state.costFilter} onChange={this.setCostFilter}>
-                  <option value=''></option>
-                  <option value="one">1-Cost</option>
-                  <option value="two">2-Cost</option>
-                  <option value="three">3-Cost</option>
-                  <option value="four">4-Cost</option>
-                  <option value="five">5-Cost</option>
-                </select>
-                <select className='champion-list-filter ' value={this.state.originFilter} onChange={this.setOriginFilter}>
-                  <option value=''></option>
-                  <option value="Celestial">Celestial (2/4/6)</option>
-                  <option value="Chrono">Chrono (2/4/6)</option>
-                  <option value="Cybernetic">Cybernetic (3/6)</option>
-                  <option value="Dark Star">Dark Star (3/6)</option>
-                  <option value="Mech Pilot">Mech-Pilot (3)</option>
-                  <option value="Rebel">Rebel (3/6)</option>
-                  <option value="Space Pirate">Space Pirate (2/4</option>
-                  <option value="Star Guardian">Star Guardian (3/6)</option>
-                  <option value="Valkyrie">Valkyrie (2)</option>
-                  <option value="Void">Void (3)</option>
-                </select>
-                <select className='champion-list-filter' value={this.state.classFilter} onChange={this.setClassFilter}>
-                  <option value=''></option>
-                  <option value="Blademaster">Blademaster (3/6)</option>
-                  <option value="Blaster">Blaster (2/4)</option>
-                  <option value="Brawler">Brawler (2/4)</option>
-                  <option value="Demolitionist">Demolitionist (2)</option>
-                  <option value="Infiltrator">Infiltrator (2/4)</option>
-                  <option value="Mana Reaver">Mana-Reaver (2/4)</option>
-                  <option value="Mercenary">Mercenary (1)</option>
-                  <option value="Mystic">Mystic (2/4)</option>
-                  <option value="Protector">Protector (2/4)</option>
-                  <option value="Sniper">Sniper (2/4)</option>
-                  <option value="Sorcerer">Sorcerer (2/4/6)</option>
-                  <option value="Starship">Starship (1)</option>
-                  <option value="Vanguard">Vanguard (2/4)</option>
-                </select>
+              ?
+              (
                 <div>
-                  <button 
-                  className='clear'
-                  onClick={this.clearFilters}
-                  >
-                    Clear Filters
+                  <select className='champion-list-filter first' value={this.props.costFilter} onChange={this.props.setCostFilter}>
+                    <option value=''></option>
+                    <option value="one">1-Cost</option>
+                    <option value="two">2-Cost</option>
+                    <option value="three">3-Cost</option>
+                    <option value="four">4-Cost</option>
+                    <option value="five">5-Cost</option>
+                  </select>
+                  <select className='champion-list-filter ' value = {this.props.originFilter} onChange={this.props.setOriginFilter}>
+                    <option value=''></option>
+                    <option value="Celestial">Celestial (2/4/6)</option>
+                    <option value="Chrono">Chrono (2/4/6)</option>
+                    <option value="Cybernetic">Cybernetic (3/6)</option>
+                    <option value="Dark Star">Dark Star (3/6)</option>
+                    <option value="Mech Pilot">Mech-Pilot (3)</option>
+                    <option value="Rebel">Rebel (3/6)</option>
+                    <option value="Space Pirate">Space Pirate (2/4</option>
+                    <option value="Star Guardian">Star Guardian (3/6)</option>
+                    <option value="Valkyrie">Valkyrie (2)</option>
+                    <option value="Void">Void (3)</option>
+                  </select>
+                  <select className='champion-list-filter' value={this.props.classFilter} onChange={this.props.setClassFilter}>
+                    <option value=''></option>
+                    <option value="Blademaster">Blademaster (3/6)</option>
+                    <option value="Blaster">Blaster (2/4)</option>
+                    <option value="Brawler">Brawler (2/4)</option>
+                    <option value="Demolitionist">Demolitionist (2)</option>
+                    <option value="Infiltrator">Infiltrator (2/4)</option>
+                    <option value="Mana Reaver">Mana-Reaver (2/4)</option>
+                    <option value="Mercenary">Mercenary (1)</option>
+                    <option value="Mystic">Mystic (2/4)</option>
+                    <option value="Protector">Protector (2/4)</option>
+                    <option value="Sniper">Sniper (2/4)</option>
+                    <option value="Sorcerer">Sorcerer (2/4/6)</option>
+                    <option value="Starship">Starship (1)</option>
+                    <option value="Vanguard">Vanguard (2/4)</option>
+                  </select>
+                  <div>
+                    <button
+                      className='clear'
+                      onClick={this.props.clearAllFilters}
+                    >
+                      Clear Filters
                   </button>
-                  <button 
-                  className='clear'
-                  onClick={this.clearAll}
-                  >
-                    Clear Board
+                    <button
+                      className='clear'
+                      onClick={this.clearAll}
+                    >
+                      Clear Board
                   </button>
-                </div>
-                <div 
-                className='champion-list' 
-                onDrop={this.handleDropOnChampionList}
-                onDragOver={this.handleDragOver}
-                >
-                  {filteredChampionArray.map(champion => {
-                    return (
-                      <div className={`champion-list-box ${champion.draggable === 'no' ? '' : 'draggable-item'}`} key={champion.name}>
-                        <img 
-                        className={`champion-list-box-image ${champion.cost} ${champion.draggable === 'no' ? 'opaque' : ''}`} src={champion.imgSrc}
-                        alt=''
-                        draggable={champion.draggable === 'no' ? false : true}
-                        onDragStart={(e) => this.handleDragStart(e, champion.name)}
-                        />
-                        <div className='champion-list-box-tag'>
-                          <div>{champion.name}</div>
-                          <div>
-                            <img draggable={false} className='origin-icon' src={champion.originIcon} alt=''/>
-                            <img draggable={false} className='origin-icon' src={champion.classIcon} alt=''/>
-                            <img draggable={false} className='origin-icon' src={champion.class2Icon} alt=''/>
+                  </div>
+                  <div
+                    className='champion-list'
+                    onDrop={this.handleDropOnChampionList}
+                    onDragOver={this.handleDragOver}
+                  >
+                    {filteredChampionArray.map(champion => {
+                      return (
+                        <div className={`champion-list-box ${champion.draggable === 'no' ? '' : 'draggable-item'}`} key={champion.name}>
+                          <img
+                            className={`champion-list-box-image ${champion.cost} ${champion.draggable === 'no' ? 'opaque' : ''}`} src={champion.imgSrc}
+                            alt=''
+                            draggable={champion.draggable === 'no' ? false : true}
+                            onDragStart={(e) => this.handleDragStart(e, champion.name)}
+                          />
+                          <div className='champion-list-box-tag'>
+                            <div>{champion.name}</div>
+                            <div>
+                              <img draggable={false} className='origin-icon' src={champion.originIcon} alt='' />
+                              <img draggable={false} className='origin-icon' src={champion.classIcon} alt='' />
+                              <img draggable={false} className='origin-icon' src={champion.class2Icon} alt='' />
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    )
-                  })}
+                      )
+                    })}
+                  </div>
                 </div>
-              </div>
-            )
-            :
-            null
-          }
-          {
-            this.state.rightContainerState === 'item'
-            ?
-            (
-              <div>
-                <div>
-                  <button 
-                  className='clear-items'
-                  onClick={this.clearItems}
-                  >
-                    Clear Items
-                  </button>
-                </div>
-                <div 
-                className='item-list' 
-                onDrop={this.handleDropOnChampionList}
-                onDragOver={this.handleDragOver}
-                >
-                  {this.state.itemArray.map((item, i) => {
-                    return (
-                      <div className='item-list-box' key={i}>
-                        <img 
-                        className='item-list-box-image' src={item.imgSrc}
-                        alt=''
-                        onDragStart={(e) => this.handleDragFromItemList(e, item.name)}
-                        onDragEnd={this.endDragFromItemList}
-                        />
-                        <div className='item-list-box-tag'>
-                          <div>{item.name}</div>
-                        </div>
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
               )
               :
               null
           }
           {
-            this.state.rightContainerState === 'notes' 
-            ?
-            (
-              <div
-              onDrop={this.handleDropOnChampionList}
-              onDragOver={this.handleDragOver}
-              >
-                <textarea 
-                className='add-note-box' 
-                value={this.state.noteBoxValue}
-                onChange={this.handleNoteBoxChange}
-                ></textarea>
-                <button 
-                className='add-note-button'
-                onClick={this.appendNote}
-                >Add Note</button>
-                <button className='add-note-button'
-                onClick={() => {this.setState({notesList: []})}}
+            this.state.rightContainerState === 'item'
+              ?
+              (
+                <div>
+                  <div>
+                    <button
+                      className='clear-items'
+                      onClick={this.clearItems}
+                    >
+                      Clear Items
+                  </button>
+                  </div>
+                  <div
+                    className='item-list'
+                    onDrop={this.handleDropOnChampionList}
+                    onDragOver={this.handleDragOver}
+                  >
+                    {this.state.itemArray.map((item, i) => {
+                      return (
+                        <div className='item-list-box' key={i}>
+                          <img
+                            className='item-list-box-image' src={item.imgSrc}
+                            alt=''
+                            onDragStart={(e) => this.handleDragFromItemList(e, item.name)}
+                            onDragEnd={this.endDragFromItemList}
+                          />
+                          <div className='item-list-box-tag'>
+                            <div>{item.name}</div>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              )
+              :
+              null
+          }
+          {
+            this.state.rightContainerState === 'notes'
+              ?
+              (
+                <div
+                  onDrop={this.handleDropOnChampionList}
+                  onDragOver={this.handleDragOver}
                 >
-                  Clear All Notes
+                  <textarea
+                    className='add-note-box'
+                    value={this.state.noteBoxValue}
+                    onChange={this.handleNoteBoxChange}
+                  ></textarea>
+                  <button
+                    className='add-note-button'
+                    onClick={this.appendNote}
+                  >Add Note</button>
+                  <button className='add-note-button'
+                    onClick={() => { this.setState({ notesList: [] }) }}
+                  >
+                    Clear All Notes
                 </button>
-              </div>
-            )
-            :
-            null
+                </div>
+              )
+              :
+              null
           }
           {
             this.state.rightContainerState === 'comps'
-            ?
-            (
-              <div
-              onDrop={this.handleDropOnChampionList}
-              onDragOver={this.handleDragOver}
-              >
-                <input
-                className='save-comp-name-input'
-                placeholder='Enter your comps name'
-                value={this.state.compName}
-                onChange={(e) => {this.setState({compName: e.target.value})}}
-                onKeyUp={(e) => {
-                  if (e.key === 'Enter' && this.state.compName) {
-                    this.saveComp()
-                  }
-                }}
-                />
-                <button
-                className={!this.state.compName ? 'save-comp-button-inactive' : 'save-comp-button-active'}
-                onClick={this.saveComp}
-                disabled={
-                  !this.state.compName ? true : false
-                }
-                >
-                  Save Current Comp
-                </button>
-                {this.state.savedComps.length === 0 
-                ?
+              ?
+              (
                 <div
-                className='comp-list-empty-message'
+                  onDrop={this.handleDropOnChampionList}
+                  onDragOver={this.handleDragOver}
                 >
-                  You currently have no saved comps.
-                </div>
-                :
-                this.state.savedComps.map(comp => {
-                  return (
+                  <input
+                    className='save-comp-name-input'
+                    placeholder='Enter your comps name'
+                    value={this.state.compName}
+                    onChange={(e) => { this.setState({ compName: e.target.value }) }}
+                    onKeyUp={(e) => {
+                      if (e.key === 'Enter' && this.state.compName) {
+                        this.saveComp()
+                      }
+                    }}
+                  />
+                  <button
+                    className={!this.state.compName ? 'save-comp-button-inactive' : 'save-comp-button-active'}
+                    onClick={this.saveComp}
+                    disabled={
+                      !this.state.compName ? true : false
+                    }
+                  >
+                    Save Current Comp
+                </button>
+                  {this.state.savedComps.length === 0
+                    ?
                     <div
-                    className='comp-list-comp-container'
-                    key={comp.compName}
+                      className='comp-list-empty-message'
                     >
-                      <div 
-                      id={comp.compName}
-                      onClick={this.displaySavedComp}
-                      className='comp-list-comp'
-                      > 
-                        {comp.compName}
-                      </div>
-                      <button
-                      className='comp-list-delete-button'
-                      onClick={this.deleteSavedComp}
-                      id={comp.compName}
-                      >
-                        Delete
+                      You currently have no saved comps.
+                </div>
+                    :
+                    this.state.savedComps.map(comp => {
+                      return (
+                        <div
+                          className='comp-list-comp-container'
+                          key={comp.compName}
+                        >
+                          <div
+                            id={comp.compName}
+                            onClick={this.displaySavedComp}
+                            className='comp-list-comp'
+                          >
+                            {comp.compName}
+                          </div>
+                          <button
+                            className='comp-list-delete-button'
+                            onClick={this.deleteSavedComp}
+                            id={comp.compName}
+                          >
+                            Delete
                       </button>
-                    </div>
-                  )
-                })
-                }
-              </div>
-            )
-            :
-            null
+                        </div>
+                      )
+                    })
+                  }
+                </div>
+              )
+              :
+              null
           }
         </div>
       </div>
@@ -1272,4 +1245,33 @@ class App extends React.Component {
   }
 }
 
-export default App
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setCostFilter: (e) => dispatch(setCostFilter(e.target.value)),
+    setOriginFilter: (e) => dispatch(setOriginFilter(
+      e.target.id
+        ?
+        e.target.id
+        :
+        e.target.value
+    )),
+    setClassFilter: (e) => dispatch(setClassFilter(
+      e.target.id
+        ?
+        e.target.id
+        :
+        e.target.value
+    )),
+    clearAllFilters: () => dispatch(clearAllFilters()),
+  }
+}
+
+const mapStateToProps = (state) => {
+  return {
+    costFilter: state.costFilter,
+    originFilter: state.originFilter,
+    classFilter: state.classFilter
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)
